@@ -44,6 +44,7 @@ let currentStatusFilter = "all"; // Filter status: 'all', 'live', 'praregist', '
 let selectedGameIds = null; // Set ID game yang dicentang di filter atas (null = pilih semua)
 let knownGameIds = new Set(); // Melacak game yang sudah ada agar uncheck user tidak ditimpa ulang
 let collapsedGameIds = null; // Set ID game yang daftar emailnya sedang disembunyikan/ciut (null = default ciut/collapse semua)
+let isMobileMenuOpen = false; // State buka/tutup menu navigasi mobile
 
 /**
  * getCollapsedGameIds(games)
@@ -82,6 +83,7 @@ function getGameIconEmoji(iconName) {
 
 // Kumpulan template SVG icon untuk tombol antarmuka yang tajam dan modern
 const SVG_ICONS = {
+  menu: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`,
   chevronDown: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
   chevronUp: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>`,
   edit: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`,
@@ -222,17 +224,25 @@ function renderApp() {
   // 6. MEMBUAT STRUKTUR HTML UTAMA
   app.innerHTML = `
     <!-- Header Bagian Atas -->
-    <header class="app-header">
+    <header class="app-header ${isMobileMenuOpen ? "mobile-menu-active" : ""}">
       <div class="container header-inner">
-        <div class="logo-area">
-          <span class="logo-icon">🎮</span>
-          <div class="logo-text-group">
-            <div class="logo-title">Game & Email Hub</div>
-            <div class="logo-subtitle">Pilih game untuk melihat email mana saja yang terhubung dan statusnya</div>
+        <div class="header-top-bar">
+          <div class="logo-area">
+            <span class="logo-icon">🎮</span>
+            <div class="logo-text-group">
+              <div class="logo-title">Game & Email Hub</div>
+              <div class="logo-subtitle">Pilih game untuk melihat email mana saja yang terhubung dan statusnya</div>
+            </div>
           </div>
+
+          <!-- Tombol Menu Mobile -->
+          <button type="button" class="btn-mobile-menu" id="btn-mobile-menu" aria-label="Menu Navigasi" title="Buka Menu">
+            <span class="menu-icon-bars">${SVG_ICONS.menu}</span>
+            <span class="menu-icon-close">${SVG_ICONS.close}</span>
+          </button>
         </div>
 
-        <div class="header-right-panel">
+        <div class="header-right-panel" id="header-right-panel">
           <div class="header-status-row">
             <div class="storage-badge" title="${badgeTitle}">
               <span class="badge-dot"></span>
@@ -692,6 +702,37 @@ function renderApp() {
       "btn-danger"
     );
   });
+
+  // 0B. Toggle Hamburger Menu Navigasi Mobile
+  const btnMobileMenu = document.getElementById("btn-mobile-menu");
+  if (btnMobileMenu) {
+    btnMobileMenu.onclick = (e) => {
+      e.stopPropagation();
+      isMobileMenuOpen = !isMobileMenuOpen;
+      const header = document.querySelector(".app-header");
+      if (header) {
+        header.classList.toggle("mobile-menu-active", isMobileMenuOpen);
+      }
+    };
+  }
+
+  // Tutup menu mobile saat salah satu tombol aksi diklik
+  document.querySelectorAll(".header-right-panel button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (isMobileMenuOpen) {
+        isMobileMenuOpen = false;
+        document.querySelector(".app-header")?.classList.remove("mobile-menu-active");
+      }
+    });
+  });
+
+  // Tutup menu mobile saat klik di luar area header
+  document.onclick = (e) => {
+    if (isMobileMenuOpen && !e.target.closest(".app-header")) {
+      isMobileMenuOpen = false;
+      document.querySelector(".app-header")?.classList.remove("mobile-menu-active");
+    }
+  };
 
   // 1. Input Pencarian: Simpan query dan pertahankan posisi kursor saat re-render
   const searchInput = document.getElementById("search-input");

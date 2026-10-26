@@ -111,10 +111,10 @@ textarea {
 }
 
 /* ==========================================================================
-   APP HEADER (STICKY FLOATING & GLASSMORPHISM)
+   APP HEADER (STICKY SOLID FLOATING)
    ========================================================================== */
 .app-header {
-  background: rgba(8, 12, 20, 0.82);
+  background: #0d121f;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   position: sticky;
   top: 0;
@@ -122,11 +122,8 @@ textarea {
   right: 0;
   width: 100%;
   z-index: 100;
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7),
-              0 4px 12px -2px rgba(0, 0, 0, 0.5),
-              inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.8),
+              0 4px 10px -2px rgba(0, 0, 0, 0.6);
   padding: 0.75rem 0;
   transition: all 0.2s ease;
 }
@@ -137,6 +134,14 @@ textarea {
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
+}
+
+.header-top-bar {
+  display: contents;
+}
+
+.btn-mobile-menu {
+  display: none;
 }
 
 .logo-area {
@@ -1654,29 +1659,113 @@ textarea {
 /* Tablet Portrait & Large Phone (<= 768px) */
 @media (max-width: 768px) {
   .app-header {
-    padding: 0.75rem 0;
+    padding: 0.65rem 0;
   }
 
   .header-inner {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.75rem;
+    gap: 0;
+  }
+
+  .header-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
   }
 
   .logo-area {
     justify-content: flex-start;
   }
 
-  .logo-subtitle {
-    max-width: 100%;
-    white-space: normal;
+  .logo-title {
+    font-size: 1.15rem;
   }
 
+  .logo-subtitle {
+    display: none;
+  }
+
+  .btn-mobile-menu {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+
+  .btn-mobile-menu:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-mobile-menu:active {
+    transform: scale(0.95);
+  }
+
+  .btn-mobile-menu .menu-icon-bars {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-mobile-menu .menu-icon-close {
+    display: none;
+  }
+
+  .app-header.mobile-menu-active .btn-mobile-menu {
+    background: rgba(99, 102, 241, 0.18);
+    border-color: rgba(99, 102, 241, 0.5);
+    color: #a5b4fc;
+  }
+
+  .app-header.mobile-menu-active .btn-mobile-menu .menu-icon-bars {
+    display: none;
+  }
+
+  .app-header.mobile-menu-active .btn-mobile-menu .menu-icon-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Panel menu kanan disembunyikan saat default mobile, dan muncul saat hamburger aktif */
   .header-right-panel {
+    display: none;
     flex-direction: column;
     align-items: stretch;
-    gap: 0.6rem;
+    gap: 0.75rem;
     width: 100%;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    animation: mobileMenuSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .app-header.mobile-menu-active .header-right-panel {
+    display: flex;
+  }
+
+  @keyframes mobileMenuSlide {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .header-status-row {
