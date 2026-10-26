@@ -595,11 +595,16 @@ textarea {
   box-shadow: 0 0 10px rgba(99, 102, 241, 0.15);
 }
 
+.game-check-pill:active {
+  transform: scale(0.97);
+}
+
 .game-check-title {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 160px;
+  pointer-events: none;
 }
 
 .game-check-badge {
@@ -609,6 +614,7 @@ textarea {
   background: var(--bg-card);
   color: var(--text-muted);
   flex-shrink: 0;
+  pointer-events: none;
 }
 
 .game-check-pill.checked .game-check-badge {

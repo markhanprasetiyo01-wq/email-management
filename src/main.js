@@ -42,6 +42,7 @@ import { openAuthModal } from "./ui/authModal.js";
 let currentSearch = ""; // Kata kunci pencarian
 let currentStatusFilter = "all"; // Filter status: 'all', 'live', 'praregist', 'maintenance'
 let selectedGameIds = null; // Set ID game yang dicentang di filter atas (null = pilih semua)
+let knownGameIds = new Set(); // Melacak game yang sudah ada agar uncheck user tidak ditimpa ulang
 let collapsedGameIds = null; // Set ID game yang daftar emailnya sedang disembunyikan/ciut (null = default ciut/collapse semua)
 
 /**
@@ -99,10 +100,12 @@ const SVG_ICONS = {
 function getSelectedGameIds(games) {
   if (selectedGameIds === null) {
     selectedGameIds = new Set(games.map((g) => g.id));
+    knownGameIds = new Set(games.map((g) => g.id));
   } else {
-    // Pastikan jika ada game baru yang datang dari cloud, game tersebut otomatis dicentang
+    // Hanya otomatis centang game BARU yang belum pernah dikenal sebelumnya
     games.forEach((g) => {
-      if (!selectedGameIds.has(g.id)) {
+      if (!knownGameIds.has(g.id)) {
+        knownGameIds.add(g.id);
         selectedGameIds.add(g.id);
       }
     });
@@ -708,7 +711,7 @@ function renderApp() {
 
   // 2. Checklist Game: Mengaktifkan atau menonaktifkan tampilan game
   document.querySelectorAll("[data-game-check-id]").forEach((chk) => {
-    chk.onchange = () => {
+    chk.addEventListener("change", () => {
       const gId = chk.dataset.gameCheckId;
       if (chk.checked) {
         selectedGameIds.add(gId);
@@ -716,7 +719,7 @@ function renderApp() {
         selectedGameIds.delete(gId);
       }
       renderApp();
-    };
+    });
   });
 
   // 3. Tombol Centang Semua Game saat kondisi empty state atau tombol cepat
@@ -816,7 +819,8 @@ function renderApp() {
         `Apakah Anda yakin ingin menghapus game "${gameObj?.title}"? Seluruh daftar email yang terhubung ke game ini juga akan dilepas.`,
         () => {
           store.deleteGame(gameId);
-          selectedGameIds.delete(gameId);
+          selectedGameIds?.delete(gameId);
+          knownGameIds?.delete(gameId);
           showToast("Game berhasil dihapus");
         },
       );
