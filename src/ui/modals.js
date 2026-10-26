@@ -18,6 +18,19 @@ import {
 import { authService } from "../services/authService.js";
 import { openAuthModal } from "./authModal.js";
 
+// Template SVG icon untuk dialog modal yang tajam dan presisi
+const MODAL_ICONS = {
+  close: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  download: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>`,
+  upload: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>`,
+  refresh: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>`,
+  trash: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`,
+  search: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`,
+  key: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L16 7l-1.5-1.5-1.5 1.5 1.5 1.5-1.5 1.5-1.5-1.5-3.5 3.5a6.5 6.5 0 1 0 3 3l3.5-3.5Z"/></svg>`,
+  save: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
+  user: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+};
+
 // Penampung elemen DOM modal overlay (Singleton)
 let modalOverlay = null;
 
@@ -41,7 +54,7 @@ function getModalElements() {
       <div class="modal-box">
         <div class="modal-header">
           <h2 class="modal-title" id="modal-title">Judul Modal</h2>
-          <button class="btn btn-icon-only btn-sm" id="modal-close-btn" style="border:none; background:transparent;">✕</button>
+          <button class="btn btn-icon-only btn-sm" id="modal-close-btn" style="border:none; background:transparent;" title="Tutup">${MODAL_ICONS.close}</button>
         </div>
         <div class="modal-body" id="modal-body"></div>
         <div class="modal-footer" id="modal-footer"></div>
@@ -140,8 +153,8 @@ export function openAddGameModal(gameId = null) {
   const current = isEdit ? games.find((g) => g.id === gameId) : null;
 
   title.textContent = isEdit
-    ? `✏️ Edit Detail Game: ${current?.title || ""}`
-    : "🎮 Tambah Game Baru";
+    ? `Edit Detail Game: ${current?.title || ""}`
+    : "Tambah Game Baru";
 
   body.innerHTML = `
     <form id="game-form" style="display:flex; flex-direction:column; gap:0.95rem;">
@@ -167,17 +180,17 @@ export function openAddGameModal(gameId = null) {
 
       <!-- Baris 2: Tipe Ekonomi Game (RMT vs NFT) -->
       <div class="form-group">
-        <label class="form-label">💰 Tipe Ekonomi Game</label>
+        <label class="form-label">Tipe Ekonomi Game</label>
         <select class="form-select" id="form-game-economy-type">
-          <option value="rmt" ${!current || current.economyType !== "nft" ? "selected" : ""}>🎮 RMT (Web2 - Manual Rate IDR)</option>
-          <option value="nft" ${current?.economyType === "nft" ? "selected" : ""}>⚡ NFT / Crypto (Web3 - Smart Contract)</option>
+          <option value="rmt" ${!current || current.economyType !== "nft" ? "selected" : ""}>Web2 / RMT (Manual Rate IDR)</option>
+          <option value="nft" ${current?.economyType === "nft" ? "selected" : ""}>Web3 / Crypto (Smart Contract DEX)</option>
         </select>
       </div>
 
       <!-- Container Khusus NFT / Web3 Smart Contract -->
-      <div id="nft-contract-section" class="form-group" style="${!current || current.economyType !== "nft" ? "display:none;" : ""} background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.3); border-radius:var(--radius-md); padding:0.85rem;">
+      <div id="nft-contract-section" class="form-group" style="${!current || current.economyType !== "nft" ? "display:none;" : ""} background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.25); border-radius:var(--radius-md); padding:0.85rem;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
-          <label class="form-label" style="color:#a5b4fc; margin-bottom:0;">🔗 Smart Contract Address (CA Token)</label>
+          <label class="form-label" style="color:#a5b4fc; margin-bottom:0;">Smart Contract Address (CA Token)</label>
           <span style="font-size:0.72rem; color:#818cf8; font-weight:600;">DexScreener Live DEX</span>
         </div>
         <div style="display:flex; gap:0.5rem;">
@@ -190,7 +203,8 @@ export function openAddGameModal(gameId = null) {
             style="font-family:var(--font-mono); font-size:0.85rem;"
           >
           <button type="button" class="btn btn-secondary btn-sm" id="btn-fetch-token" style="white-space:nowrap; padding:0 0.85rem;" title="Ambil info token & harga terkini">
-            🔍 Cek Token
+            ${MODAL_ICONS.search}
+            <span>Cek Token</span>
           </button>
         </div>
         <div id="token-status-preview" style="margin-top:0.55rem; font-size:0.75rem; color:var(--text-muted); display:${current?.tokenSymbol ? "block" : "none"};">
@@ -243,35 +257,34 @@ export function openAddGameModal(gameId = null) {
       </div>
 
       <!-- Baris 5: Ikon / Simbol Mata Uang In-Game -->
-      <div class="form-group" style="background:rgba(234,179,8,0.06); border:1px dashed rgba(234,179,8,0.3); border-radius:var(--radius-md); padding:0.75rem;">
-        <label class="form-label" style="color:#fef08a;">💰 Ikon / Simbol Mata Uang In-Game Game Ini</label>
+      <div class="form-group" style="background:rgba(234,179,8,0.06); border:1px solid rgba(234,179,8,0.25); border-radius:var(--radius-md); padding:0.75rem;">
+        <label class="form-label" style="color:#fef08a;">Simbol / Ikon Mata Uang In-Game</label>
         <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
           <input 
             type="text" 
             class="form-input" 
             id="form-game-currency-icon" 
             value="${current?.currencyIcon || "🪙"}" 
-            placeholder="Contoh: 🪙, 💎, 💰, USDT" 
+            placeholder="Contoh: 🪙, 💎, USDT" 
             style="width:90px; font-size:1.15rem; text-align:center; font-weight:700;"
           >
           <div style="display:flex; gap:0.35rem; flex-wrap:wrap;" id="currency-icon-swatches">
-            <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="🪙" title="Koin Emas">🪙 Koin</button>
+            <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="🪙" title="Koin">🪙 Koin</button>
             <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="💎" title="Diamond">💎 Diamond</button>
-            <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="💰" title="Kantong Uang">💰 Uang</button>
+            <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="💰" title="Gold / Uang">💰 Uang</button>
             <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="💠" title="Crystal">💠 Crystal</button>
-            <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="🟡" title="Gold">🟡 Gold</button>
             <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="💵" title="Cash">💵 Cash</button>
             <button type="button" class="btn btn-secondary btn-sm currency-swatch-btn" data-icon="✨" title="Zen">✨ Zen</button>
           </div>
         </div>
         <small style="font-size:0.72rem; color:var(--text-muted); margin-top:0.35rem; display:block;">
-          Ikon ini akan muncul di samping jumlah mata uang game ini (di header dan di samping email status LIVE).
+          Ikon ini akan muncul di samping saldo akun LIVE dan kalkulasi portofolio.
         </small>
       </div>
 
       <!-- Baris 6: Rate IDR per Unit Mata Uang In-Game -->
-      <div class="form-group" id="rmt-rate-section" style="background:rgba(16,185,129,0.06); border:1px dashed rgba(16,185,129,0.3); border-radius:var(--radius-md); padding:0.75rem;">
-        <label class="form-label" style="color:#6ee7b7;" id="label-rate-section">💱 Kurs / Rate Konversi IDR (RMT / Market)</label>
+      <div class="form-group" id="rmt-rate-section" style="background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.25); border-radius:var(--radius-md); padding:0.75rem;">
+        <label class="form-label" style="color:#6ee7b7;" id="label-rate-section">Kurs / Rate Konversi IDR (RMT / Market)</label>
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:0.75rem; align-items:center;">
           <div>
             <label style="font-size:0.75rem; color:var(--text-muted); display:block; margin-bottom:0.25rem;" id="label-price-idr">Harga dalam Rupiah (Rp)</label>
@@ -307,7 +320,7 @@ export function openAddGameModal(gameId = null) {
           </div>
         </div>
         <small style="font-size:0.72rem; color:var(--text-muted); margin-top:0.4rem; display:block;" id="rate-formula-hint">
-          Formula: Rp <span id="hint-price">${current?.currencyRateIdr ? Number(current.currencyRateIdr).toLocaleString("id-ID") : "0"}</span> per <span id="hint-unit">${current?.currencyRateUnit || 1000}</span> mata uang in-game. Digunakan untuk menghitung estimasi nilai Rupiah dari saldo akun LIVE.
+          Formula: Rp <span id="hint-price">${current?.currencyRateIdr ? Number(current.currencyRateIdr).toLocaleString("id-ID") : "0"}</span> per <span id="hint-unit">${current?.currencyRateUnit || 1000}</span> unit in-game. Digunakan untuk menghitung estimasi nilai Rupiah dari saldo akun LIVE.
         </small>
       </div>
     </form>
@@ -329,7 +342,7 @@ export function openAddGameModal(gameId = null) {
     if (isNft) {
       if (labelRateSection)
         labelRateSection.innerHTML =
-          "⚡ Kurs Token Crypto ke IDR (Otomatis dari CA)";
+          "Kurs Token Crypto ke IDR (Otomatis dari CA)";
       if (labelPriceIdr) labelPriceIdr.innerHTML = "Harga 1 Token (Rp)";
       if (labelUnitAmount) labelUnitAmount.innerHTML = "Per Token (Satuan)";
       // Default unit untuk NFT/token crypto adalah 1 (karena harga token per 1 biji)
@@ -342,7 +355,7 @@ export function openAddGameModal(gameId = null) {
     } else {
       if (labelRateSection)
         labelRateSection.innerHTML =
-          "💱 Kurs / Rate Konversi IDR (RMT / Market Manual)";
+          "Kurs / Rate Konversi IDR (RMT / Market Manual)";
       if (labelPriceIdr) labelPriceIdr.innerHTML = "Harga dalam Rupiah (Rp)";
       if (labelUnitAmount)
         labelUnitAmount.innerHTML = "Per Jumlah Mata Uang (Unit)";
@@ -654,14 +667,14 @@ export function openConnectEmailToGameModal(targetGameId = null) {
   const selectedGameId = targetGameId || games[0]?.id;
   const targetGame = games.find((g) => g.id === selectedGameId);
 
-  title.textContent = `✉️ Hubungkan Email ke ${targetGame ? targetGame.title : "Game"}`;
+  title.textContent = `Hubungkan Email ke ${targetGame ? targetGame.title : "Game"}`;
 
   body.innerHTML = `
     <form id="connect-email-form" style="display:flex; flex-direction:column; gap:1rem;">
       <div class="form-group">
         <label class="form-label">Pilih Game Tujuan *</label>
         <select class="form-select" id="form-connect-game-id" required>
-          ${games.map((g) => `<option value="${g.id}" ${g.id === selectedGameId ? "selected" : ""}>🎮 ${g.title}</option>`).join("")}
+          ${games.map((g) => `<option value="${g.id}" ${g.id === selectedGameId ? "selected" : ""}>${g.title}</option>`).join("")}
         </select>
       </div>
 
@@ -677,7 +690,7 @@ export function openConnectEmailToGameModal(targetGameId = null) {
             type="text" 
             class="form-input" 
             id="form-email-quick-search" 
-            placeholder="🔍 Cari email atau nama profil (misal: farm, rohan, architech)..."
+            placeholder="Cari email atau nama profil..."
             style="font-size:0.8rem; padding:0.45rem 0.75rem;"
           >
 
@@ -697,10 +710,10 @@ export function openConnectEmailToGameModal(targetGameId = null) {
             >
             <div class="email-input-btn-group">
               <button type="button" class="btn btn-secondary btn-sm" id="btn-toggle-custom-email">
-                ✍️ Ketik Manual
+                Ketik Manual
               </button>
-              <button type="button" class="btn btn-secondary btn-sm" id="btn-trigger-bulk-modal" style="background:rgba(99,102,241,0.15); color:#a5b4fc; border-color:rgba(99,102,241,0.4);" title="Paste puluhan email sekaligus">
-                📥 Bulk Paste
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-trigger-bulk-modal" style="background:rgba(99,102,241,0.15); color:#a5b4fc; border-color:rgba(99,102,241,0.4);" title="Paste banyak email sekaligus">
+                Bulk Import
               </button>
             </div>
           </div>
@@ -712,19 +725,19 @@ export function openConnectEmailToGameModal(targetGameId = null) {
         <div class="status-radio-grid">
           <label class="status-radio-label live selected" data-status-val="live">
             <input type="radio" name="connect-status-radio" value="live" checked>
-            <span>🟢 Live</span>
+            <span style="display:inline-flex; align-items:center; gap:0.35rem;"><span class="status-dot live"></span> Live</span>
             <small style="font-size:0.68rem; color:var(--text-secondary);">Sudah rilis / aktif</small>
           </label>
 
           <label class="status-radio-label praregist" data-status-val="praregist">
             <input type="radio" name="connect-status-radio" value="praregist">
-            <span>🟡 Praregist</span>
+            <span style="display:inline-flex; align-items:center; gap:0.35rem;"><span class="status-dot praregist"></span> Praregist</span>
             <small style="font-size:0.68rem; color:var(--text-secondary);">Pre-register</small>
           </label>
 
           <label class="status-radio-label maintenance" data-status-val="maintenance">
             <input type="radio" name="connect-status-radio" value="maintenance">
-            <span>🔴 Maintenance</span>
+            <span style="display:inline-flex; align-items:center; gap:0.35rem;"><span class="status-dot maintenance"></span> Maintenance</span>
             <small style="font-size:0.68rem; color:var(--text-secondary);">Perbaikan</small>
           </label>
         </div>
@@ -732,11 +745,11 @@ export function openConnectEmailToGameModal(targetGameId = null) {
 
       <div class="form-group">
         <label class="form-label">Nickname / IGN / Catatan (Opsional)</label>
-        <input type="text" class="form-input" id="form-connect-ign" placeholder="Contoh: Nickname: Shadow / UID: 812903">
+        <input type="text" class="form-input" id="form-connect-ign" placeholder="Contoh: IGN: Shadow / Server...">
       </div>
 
       <div class="form-group">
-        <label class="form-label">💰 Mata Uang In-Game (Tradable / RMT / Market)</label>
+        <label class="form-label">Mata Uang In-Game (Tradable / RMT / Market)</label>
         <input type="number" min="0" step="any" class="form-input" id="form-connect-currency" value="0" placeholder="Contoh: 15000">
         <small style="font-size:0.72rem; color:var(--text-muted);">Hanya akan terlihat dan dihitung saat status akun bernilai LIVE.</small>
       </div>
@@ -775,11 +788,11 @@ export function openConnectEmailToGameModal(targetGameId = null) {
         const isAlreadyInThisGame = registeredEmailsInGame.has(e.id);
         if (isAlreadyInThisGame) {
           return `<option value="${e.address}" disabled style="color:#f87171; background:rgba(239,68,68,0.12);">
-          ⛔ ${e.address} (Sudah Terdaftar di Game Ini)
+          [Terdaftar] ${e.address}
         </option>`;
         } else {
           return `<option value="${e.address}">
-          ✉️ ${e.address} ${e.label ? `— ${e.label}` : ""}
+          ${e.address} ${e.label ? `— ${e.label}` : ""}
         </option>`;
         }
       })
@@ -803,7 +816,7 @@ export function openConnectEmailToGameModal(targetGameId = null) {
   // Saat game tujuan diganti di dropdown, refresh list email
   gameSelect.onchange = () => {
     const chosenGame = games.find((g) => g.id === gameSelect.value);
-    title.textContent = `✉️ Hubungkan Email ke ${chosenGame ? chosenGame.title : "Game"}`;
+    title.textContent = `Hubungkan Email ke ${chosenGame ? chosenGame.title : "Game"}`;
     updateEmailOptionsList();
   };
 
@@ -827,14 +840,14 @@ export function openConnectEmailToGameModal(targetGameId = null) {
         emailInput.style.background = "var(--bg-input)";
         emailInput.value = "";
         emailInput.focus();
-        btnToggleCustom.textContent = "📋 Pilih dari List";
+        btnToggleCustom.textContent = "Pilih dari Daftar";
       } else {
         emailInput.setAttribute("readonly", "true");
         emailInput.style.background = "var(--bg-subtle)";
         if (existingEmailSelect?.value) {
           emailInput.value = existingEmailSelect.value;
         }
-        btnToggleCustom.textContent = "✍️ Ketik Manual";
+        btnToggleCustom.textContent = "Ketik Manual";
       }
     };
   }
@@ -941,15 +954,15 @@ export function openEditGameAccountModal(regId) {
     <div style="display:flex; flex-direction:column; gap:1rem;">
       <div style="background:var(--bg-subtle); padding:0.75rem; border-radius:var(--radius-md); border:1px solid var(--border-card);">
         <div style="font-size:0.75rem; color:var(--text-muted);">Alamat Email:</div>
-        <div style="font-family:var(--font-mono); font-size:0.95rem; color:#fff; font-weight:700;">✉️ ${reg.email.address}</div>
+        <div style="font-family:var(--font-mono); font-size:0.95rem; color:#fff; font-weight:700;">${reg.email.address}</div>
       </div>
 
       <div class="form-group">
         <label class="form-label">Status Game</label>
         <select class="form-select" id="edit-reg-status">
-          <option value="live" ${reg.status === "live" ? "selected" : ""}>🟢 Live (Aktif / Sudah Rilis)</option>
-          <option value="praregist" ${reg.status === "praregist" ? "selected" : ""}>🟡 Praregist (Pre-register)</option>
-          <option value="maintenance" ${reg.status === "maintenance" ? "selected" : ""}>🔴 Maintenance (Sedang Perbaikan)</option>
+          <option value="live" ${reg.status === "live" ? "selected" : ""}>Live (Aktif)</option>
+          <option value="praregist" ${reg.status === "praregist" ? "selected" : ""}>Praregist (Pre-register)</option>
+          <option value="maintenance" ${reg.status === "maintenance" ? "selected" : ""}>Maintenance (Sedang Perbaikan)</option>
         </select>
       </div>
 
@@ -959,7 +972,7 @@ export function openEditGameAccountModal(regId) {
       </div>
 
       <div class="form-group">
-        <label class="form-label">💰 Mata Uang In-Game (Tradable / RMT / Market)</label>
+        <label class="form-label">Mata Uang In-Game (Tradable / RMT / Market)</label>
         <input type="number" min="0" step="any" class="form-input" id="edit-reg-currency" value="${reg.currency ?? 0}" placeholder="Contoh: 15000">
         <small style="font-size:0.72rem; color:var(--text-muted);">Mata uang ini hanya akan terlihat dan dihitung saat akun berstatus LIVE.</small>
       </div>
@@ -1000,7 +1013,7 @@ export function openBackupModal() {
   }
 
   const { overlay, title, body, footer } = getModalElements();
-  title.textContent = "💾 Penyimpanan & Cadangan Data";
+  title.textContent = "Penyimpanan & Cadangan Data";
 
   const userEmail = authService.getUser()?.email || "User";
 
@@ -1008,7 +1021,7 @@ export function openBackupModal() {
     <div style="display:flex; flex-direction:column; gap:1.1rem;">
       <div style="background:rgba(99, 102, 241, 0.08); border:1px solid rgba(99, 102, 241, 0.25); border-radius:var(--radius-md); padding:0.95rem; font-size:0.83rem; line-height:1.5;">
         <div style="font-weight:700; color:#818cf8; margin-bottom:0.35rem; display:flex; align-items:center; gap:0.4rem;">
-          <span>👤</span>
+          ${MODAL_ICONS.user}
           <span>Ruang Kerja Terenkripsi: <strong>${userEmail}</strong></span>
         </div>
         <p style="color:var(--text-secondary); margin:0;">
@@ -1017,16 +1030,16 @@ export function openBackupModal() {
       </div>
 
       <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:0.65rem;">
-        <button class="btn btn-secondary" id="btn-dl-json" style="padding:0.75rem; justify-content:flex-start;">
-          <span style="font-size:1.1rem;">💾</span>
+        <button class="btn btn-secondary" id="btn-dl-json" style="padding:0.75rem; justify-content:flex-start; gap:0.75rem;">
+          <div style="color:var(--primary);">${MODAL_ICONS.download}</div>
           <div style="text-align:left;">
             <div style="font-size:0.85rem; font-weight:700;">Download Backup JSON</div>
             <div style="font-size:0.72rem; color:var(--text-muted); font-weight:normal;">Unduh seluruh data Anda ke file .json</div>
           </div>
         </button>
 
-        <button class="btn btn-secondary" id="btn-import-trigger" style="padding:0.75rem; justify-content:flex-start;">
-          <span style="font-size:1.1rem;">📥</span>
+        <button class="btn btn-secondary" id="btn-import-trigger" style="padding:0.75rem; justify-content:flex-start; gap:0.75rem;">
+          <div style="color:#60a5fa;">${MODAL_ICONS.upload}</div>
           <div style="text-align:left;">
             <div style="font-size:0.85rem; font-weight:700;">Restore dari File Backup</div>
             <div style="font-size:0.72rem; color:var(--text-muted); font-weight:normal;">Pulihkan data dari file backup JSON</div>
@@ -1034,16 +1047,16 @@ export function openBackupModal() {
         </button>
         <input type="file" id="input-import-json" accept=".json" style="display:none;">
 
-        <button class="btn btn-secondary" id="btn-reload-file" style="padding:0.75rem; justify-content:flex-start;">
-          <span style="font-size:1.1rem;">🔄</span>
+        <button class="btn btn-secondary" id="btn-reload-file" style="padding:0.75rem; justify-content:flex-start; gap:0.75rem;">
+          <div style="color:#34d399;">${MODAL_ICONS.refresh}</div>
           <div style="text-align:left;">
             <div style="font-size:0.85rem; font-weight:700;">Sinkron Ulang Cloud</div>
             <div style="font-size:0.72rem; color:var(--text-muted); font-weight:normal;">Tarik data terbaru dari server cloud</div>
           </div>
         </button>
 
-        <button class="btn btn-secondary" id="btn-reset-db" style="padding:0.75rem; justify-content:flex-start; border-color:rgba(239, 68, 68, 0.35); background:rgba(239, 68, 68, 0.06);">
-          <span style="font-size:1.1rem;">🗑️</span>
+        <button class="btn btn-secondary" id="btn-reset-db" style="padding:0.75rem; justify-content:flex-start; gap:0.75rem; border-color:rgba(239, 68, 68, 0.35); background:rgba(239, 68, 68, 0.06);">
+          <div style="color:#f87171;">${MODAL_ICONS.trash}</div>
           <div style="text-align:left;">
             <div style="font-size:0.85rem; font-weight:700; color:#f87171;">Kosongkan Database</div>
             <div style="font-size:0.72rem; color:#fca5a5; font-weight:normal;">Hapus semua game & email di akun ini</div>
@@ -1109,7 +1122,7 @@ export function openBackupModal() {
         showToast("Database akun Anda telah dikosongkan.");
         closeModal();
       },
-      "🗑️ Ya, Kosongkan",
+      "Kosongkan Database",
       "btn-danger",
     );
   };
@@ -1134,12 +1147,12 @@ export function openBulkEmailModal() {
   const { overlay, title, body, footer } = getModalElements();
   const games = store.getGames();
 
-  title.textContent = "📥 Impor & Paste Banyak Email Sekaligus";
+  title.textContent = "Impor Banyak Email Sekaligus";
 
   body.innerHTML = `
     <div style="display:flex; flex-direction:column; gap:1rem;">
       <div style="background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.25); border-radius:var(--radius-md); padding:0.85rem; font-size:0.8rem; line-height:1.5;">
-        <span style="color:#818cf8; font-weight:700; display:block; margin-bottom:0.25rem;">💡 Cara Mudah Input Banyak Email:</span>
+        <span style="color:#818cf8; font-weight:700; display:block; margin-bottom:0.25rem;">Format Input Email:</span>
         Paste seluruh daftar email Anda di bawah ini. Anda bisa copy langsung dari <strong>Notepad, Excel, atau file Text</strong>. Pisahkan dengan <strong>Enter (baris baru)</strong> atau <strong>koma (,)</strong>.
       </div>
 
@@ -1184,15 +1197,15 @@ export function openBulkEmailModal() {
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Pilih Game Tujuan:</label>
               <select class="form-select" id="bulk-target-game">
-                ${games.map((g) => `<option value="${g.id}">🎮 ${g.title}</option>`).join("")}
+                ${games.map((g) => `<option value="${g.id}">${g.title}</option>`).join("")}
               </select>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Status Akun di Game:</label>
               <select class="form-select" id="bulk-target-status">
-                <option value="praregist">🟡 Praregist (Pre-register)</option>
-                <option value="live">🟢 Live (Rilis)</option>
-                <option value="maintenance">🔴 Maintenance</option>
+                <option value="praregist">Praregist (Pre-register)</option>
+                <option value="live">Live (Rilis)</option>
+                <option value="maintenance">Maintenance</option>
               </select>
             </div>
           </div>
@@ -1235,7 +1248,7 @@ export function openBulkEmailModal() {
 
   footer.innerHTML = `
     <button class="btn btn-secondary btn-sm" id="btn-cancel-bulk">Batal</button>
-    <button class="btn btn-primary btn-sm" id="btn-save-bulk">💾 Simpan Semua ke Cloud</button>
+    <button class="btn btn-primary btn-sm" id="btn-save-bulk">Simpan ke Database</button>
   `;
 
   document.getElementById("btn-cancel-bulk").onclick = closeModal;
@@ -1310,7 +1323,7 @@ export function openEditEmailDetailsModal(emailId) {
   const emailObj = emails.find((e) => e.id === emailId);
   if (!emailObj) return;
 
-  title.textContent = `✏️ Edit Email: ${emailObj.address}`;
+  title.textContent = `Edit Detail Email: ${emailObj.address}`;
 
   body.innerHTML = `
     <div style="display:flex; flex-direction:column; gap:1rem;">

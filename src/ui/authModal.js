@@ -7,6 +7,17 @@
 import { authService } from "../services/authService.js";
 import { showToast } from "./toast.js";
 
+const AUTH_SVGS = {
+  gamepad: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="6"/></svg>`,
+  mail: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`,
+  lock: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  key: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L16 7l-1.5-1.5-1.5 1.5 1.5 1.5-1.5 1.5-1.5-1.5-3.5 3.5a6.5 6.5 0 1 0 3 3l3.5-3.5Z"/></svg>`,
+  userPlus: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" x2="20" y1="8" y2="14"/><line x1="23" x2="17" y1="11" y2="11"/></svg>`,
+  eye: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`,
+  eyeOff: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>`,
+  close: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
+};
+
 let authModalEl = null;
 
 export function openAuthModal(defaultMode = "login") {
@@ -27,20 +38,20 @@ export function openAuthModal(defaultMode = "login") {
         <div class="auth-header-wrapper">
           <div style="display: flex; align-items: center; gap: 0.85rem;">
             <div class="auth-brand-badge">
-              <span>🎮</span>
+              ${AUTH_SVGS.gamepad}
             </div>
             <div>
               <h2 class="modal-title" style="font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em;">
-                ${isRegister ? "Buat Akun Hub Baru" : "Masuk ke Game & Email Hub"}
+                ${isRegister ? "Daftar Akun Baru" : "Masuk ke GameHub"}
               </h2>
               <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.2rem;">
-                ${isRegister ? "1 IP hanya dapat membuat 1 akun pribadi" : "Akses aman ke data game & email terhubung"}
+                ${isRegister ? "1 IP hanya dapat membuat 1 akun terenkripsi" : "Akses aman ke portofolio game & email Anda"}
               </div>
             </div>
           </div>
           ${
             authService.isLoggedIn()
-              ? `<button class="btn btn-icon-only btn-sm" id="auth-close-btn" style="border: none; background: transparent; color: var(--text-muted);" title="Tutup">✕</button>`
+              ? `<button class="btn btn-icon-only btn-sm" id="auth-close-btn" style="border: none; background: transparent; color: var(--text-muted);" title="Tutup">${AUTH_SVGS.close}</button>`
               : ""
           }
         </div>
@@ -49,11 +60,11 @@ export function openAuthModal(defaultMode = "login") {
           <!-- Tab Switcher Navigasi: Masuk vs Daftar -->
           <div class="auth-tab-nav">
             <button type="button" class="auth-tab-btn ${!isRegister ? "active" : ""}" id="tab-auth-login">
-              <span>🔑</span>
+              <span>${AUTH_SVGS.key}</span>
               <span>Masuk Akun</span>
             </button>
             <button type="button" class="auth-tab-btn ${isRegister ? "active" : ""}" id="tab-auth-register">
-              <span>✨</span>
+              <span>${AUTH_SVGS.userPlus}</span>
               <span>Daftar Baru</span>
             </button>
           </div>
@@ -63,7 +74,7 @@ export function openAuthModal(defaultMode = "login") {
             <div class="form-group">
               <label class="form-label" for="auth-email">Alamat Email *</label>
               <div class="auth-input-container">
-                <span class="auth-input-icon">✉️</span>
+                <span class="auth-input-icon">${AUTH_SVGS.mail}</span>
                 <input 
                   type="email" 
                   class="form-input auth-input-field" 
@@ -79,7 +90,7 @@ export function openAuthModal(defaultMode = "login") {
             <div class="form-group">
               <label class="form-label" for="auth-password">Kata Sandi (Password) *</label>
               <div class="auth-input-container">
-                <span class="auth-input-icon">🔒</span>
+                <span class="auth-input-icon">${AUTH_SVGS.lock}</span>
                 <input 
                   type="password" 
                   class="form-input auth-input-field" 
@@ -96,15 +107,13 @@ export function openAuthModal(defaultMode = "login") {
                   style="position: absolute; right: 0.65rem; background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 0.25rem; font-size: 1rem; display: flex; align-items: center; justify-content: center;" 
                   title="Lihat / Sembunyikan Password"
                 >
-                  👁️
+                  ${AUTH_SVGS.eye}
                 </button>
               </div>
             </div>
 
-          
-
             <button type="submit" class="btn btn-primary" id="btn-submit-auth" style="width: 100%; padding: 0.75rem 1rem; margin-top: 0.35rem; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.01em;">
-              ${isRegister ? "Daftar Akun Baru ✨" : "Masuk Sekarang 🚀"}
+              ${isRegister ? "Daftar Akun Baru" : "Masuk Sekarang"}
             </button>
           </form>
 
@@ -156,7 +165,7 @@ export function openAuthModal(defaultMode = "login") {
       togglePassBtn.onclick = () => {
         const isPassword = passwordInput.getAttribute("type") === "password";
         passwordInput.setAttribute("type", isPassword ? "text" : "password");
-        togglePassBtn.textContent = isPassword ? "🙈" : "👁️";
+        togglePassBtn.innerHTML = isPassword ? AUTH_SVGS.eyeOff : AUTH_SVGS.eye;
         togglePassBtn.title = isPassword
           ? "Sembunyikan Password"
           : "Lihat Password";

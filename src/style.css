@@ -152,11 +152,23 @@ textarea {
   text-decoration: none;
 }
 
-.logo-icon {
-  font-size: 1.65rem;
-  line-height: 1;
+.brand-avatar-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.22) 0%, rgba(79, 70, 229, 0.45) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c7d2fe;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.35));
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+}
+
+.brand-avatar-box svg {
+  width: 18px;
+  height: 18px;
 }
 
 .logo-text-group {
@@ -167,11 +179,27 @@ textarea {
 
 .logo-title {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.22rem;
   font-weight: 800;
   color: #fff;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+}
+
+.logo-badge {
+  font-size: 0.62rem;
+  padding: 0.1rem 0.4rem;
+  background: rgba(99, 102, 241, 0.16);
+  border: 1px solid rgba(99, 102, 241, 0.38);
+  border-radius: 4px;
+  color: #a5b4fc;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-left: 0.35rem;
+  display: inline-block;
+  line-height: 1.2;
 }
 
 .logo-subtitle {
@@ -226,11 +254,11 @@ textarea {
 .user-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   background: rgba(99, 102, 241, 0.12);
   padding: 0.25rem 0.65rem;
   border-radius: var(--radius-pill);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  border: 1px solid rgba(99, 102, 241, 0.28);
   font-size: 0.76rem;
   max-width: 100%;
 }
@@ -241,7 +269,15 @@ textarea {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 160px;
+  max-width: 170px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.user-pill-email svg {
+  flex-shrink: 0;
+  color: #818cf8;
 }
 
 .user-pill-logout {
@@ -254,10 +290,14 @@ textarea {
   padding: 0 0.15rem;
   flex-shrink: 0;
   transition: opacity 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .user-pill-logout:hover {
   opacity: 0.8;
+  color: #fca5a5;
 }
 
 .header-buttons {
@@ -429,13 +469,31 @@ textarea {
   border: none;
 }
 
+.search-input-box {
+  position: relative;
+  width: 100%;
+}
+
+.search-icon-prefix {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .search-input {
   display: block;
   width: 100%;
-  height: 36px;
-  min-height: 36px;
-  padding: 0 0.85rem;
-  line-height: 36px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0 0.85rem 0 2.35rem;
+  line-height: 38px;
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
@@ -450,6 +508,7 @@ textarea {
 .search-input:focus {
   border-color: var(--border-focus);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  background: #0e1424;
 }
 
 .search-input::placeholder {
@@ -461,11 +520,11 @@ textarea {
   align-items: center;
   gap: 0.25rem;
   background: var(--bg-card);
-  padding: 0.2rem;
+  padding: 0.22rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-card);
   flex-wrap: wrap;
-  min-height: 34px;
+  min-height: 36px;
 }
 
 .status-pill {
@@ -474,13 +533,13 @@ textarea {
   color: var(--text-secondary);
   font-size: 0.78rem;
   font-weight: 600;
-  padding: 0.25rem 0.6rem;
+  padding: 0.25rem 0.65rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
   transition: all 0.15s ease;
   white-space: nowrap;
   user-select: none;
@@ -489,12 +548,52 @@ textarea {
 
 .status-pill:hover {
   color: #fff;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .status-pill.active {
   background: var(--bg-subtle);
   color: #fff;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.status-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.status-dot.live {
+  background-color: var(--status-live);
+  box-shadow: 0 0 6px var(--status-live);
+}
+
+.status-dot.praregist {
+  background-color: var(--status-praregist);
+  box-shadow: 0 0 6px var(--status-praregist);
+}
+
+.status-dot.maintenance {
+  background-color: var(--status-maint);
+  box-shadow: 0 0 6px var(--status-maint);
+}
+
+.status-count-badge {
+  font-size: 0.7rem;
+  padding: 0.08rem 0.45rem;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--text-muted);
+  font-weight: 700;
+  margin-left: 0.2rem;
+}
+
+.status-pill.active .status-count-badge {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
 }
 
 /* ==========================================================================
@@ -504,7 +603,7 @@ textarea {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  padding: 1rem 1.25rem;
+  padding: 0.95rem 1.25rem;
   margin-bottom: 1.5rem;
   display: flex;
   flex-direction: column;
@@ -526,6 +625,12 @@ textarea {
   flex-wrap: wrap;
 }
 
+.checklist-icon-indicator {
+  display: inline-flex;
+  align-items: center;
+  color: #818cf8;
+}
+
 .checklist-title {
   font-size: 0.88rem;
   font-weight: 700;
@@ -533,9 +638,12 @@ textarea {
 }
 
 .checklist-count-badge {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
-  font-weight: normal;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.12rem 0.5rem;
+  border-radius: var(--radius-pill);
 }
 
 .checklist-quick-actions {
@@ -551,9 +659,12 @@ textarea {
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  padding: 0.2rem 0.4rem;
+  padding: 0.2rem 0.45rem;
   border-radius: var(--radius-sm);
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .btn-text-link:hover {
@@ -576,7 +687,7 @@ textarea {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.4rem 0.8rem;
+  padding: 0.38rem 0.75rem;
   background: var(--bg-subtle);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
@@ -589,6 +700,15 @@ textarea {
   min-height: 36px;
 }
 
+.game-check-avatar {
+  font-size: 0.95rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .game-check-pill:hover {
   background: rgba(255, 255, 255, 0.06);
   color: #fff;
@@ -596,18 +716,18 @@ textarea {
 }
 
 .game-check-pill input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   accent-color: var(--primary);
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .game-check-pill.checked {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(99, 102, 241, 0.14);
   border-color: rgba(99, 102, 241, 0.45);
   color: #fff;
-  box-shadow: 0 0 10px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.12);
 }
 
 .game-check-pill:active {
@@ -647,6 +767,8 @@ textarea {
 }
 
 .game-main-card {
+  position: relative;
+  overflow: hidden;
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
@@ -661,6 +783,16 @@ textarea {
 .game-main-card:hover {
   border-color: rgba(255, 255, 255, 0.18);
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+
+.game-accent-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 2;
+  opacity: 0.9;
 }
 
 /* Header Kartu Game */
@@ -702,8 +834,10 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.45rem;
+  font-size: 1.35rem;
   flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .game-title-meta {
@@ -798,13 +932,22 @@ textarea {
 }
 
 .btn-copy-ca {
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
   color: #93c5fd;
   cursor: pointer;
-  padding: 0 0.15rem;
+  padding: 0.15rem 0.35rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-copy-ca:hover {
+  background: rgba(99, 102, 241, 0.25);
+  color: #fff;
+  border-color: rgba(99, 102, 241, 0.5);
 }
 
 .game-meta-tag.rate-pill {
@@ -926,24 +1069,53 @@ textarea {
    ========================================================================== */
 .collapsed-email-summary {
   display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.65rem 0.95rem;
-  background: rgba(255, 255, 255, 0.03);
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.85rem 1.1rem;
+  background: rgba(255, 255, 255, 0.02);
   border: 1px dashed var(--border-card);
   border-radius: var(--radius-md);
-  font-size: 0.8rem;
-  color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
-  flex-wrap: wrap;
 }
 
 .collapsed-email-summary:hover {
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(99, 102, 241, 0.06);
   border-color: rgba(99, 102, 241, 0.4);
-  color: #fff;
+  transform: translateY(-1px);
+}
+
+.collapsed-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.collapsed-summary-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.collapsed-expand-hint {
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.collapsed-summary-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
 }
 
 .status-summary-tag {
@@ -970,6 +1142,17 @@ textarea {
   background: rgba(239, 68, 68, 0.15);
   color: #f87171;
   border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.tag-currency {
+  background: rgba(234, 179, 8, 0.1);
+  color: #fde047;
+  border: 1px solid rgba(234, 179, 8, 0.25);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.15rem 0.55rem;
+  border-radius: var(--radius-pill);
 }
 
 /* ==========================================================================
@@ -1013,9 +1196,17 @@ textarea {
   font-family: var(--font-mono);
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
   min-width: 0;
+}
+
+.email-icon-prefix {
+  color: #818cf8;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  opacity: 0.9;
 }
 
 .email-addr-text {
@@ -1033,6 +1224,9 @@ textarea {
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .email-sub-detail {
@@ -1061,10 +1255,10 @@ textarea {
   min-height: 32px;
   box-sizing: border-box;
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: center;
-  gap: 0.35rem;
-  padding: 0 0.65rem;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
   background: rgba(234, 179, 8, 0.1);
   border: 1px solid rgba(234, 179, 8, 0.35);
   border-radius: var(--radius-sm);
@@ -1083,6 +1277,15 @@ textarea {
   background: rgba(234, 179, 8, 0.2);
   border-color: rgba(234, 179, 8, 0.6);
   transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(234, 179, 8, 0.15);
+}
+
+.email-currency-idr-sub {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #6ee7b7;
+  margin-left: 0.25rem;
+  opacity: 0.9;
 }
 
 .status-dropdown {
@@ -1368,14 +1571,52 @@ textarea {
 /* Empty State */
 .empty-state {
   text-align: center;
-  padding: 2.75rem 1.5rem;
+  padding: 3.5rem 1.5rem;
   background: var(--bg-card);
   border: 1px dashed var(--border-card);
   border-radius: var(--radius-lg);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
+  max-width: 580px;
+  margin: 2rem auto;
+}
+
+.empty-state.auth-locked-empty {
+  background: linear-gradient(180deg, rgba(19, 28, 49, 0.6) 0%, rgba(13, 18, 32, 0.8) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
+}
+
+.empty-state-icon-box {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a5b4fc;
+  margin-bottom: 0.35rem;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+}
+
+.empty-state-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+}
+
+.empty-state-desc {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  max-width: 440px;
 }
 
 /* ==========================================================================
@@ -1546,7 +1787,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.45rem;
+  color: #a5b4fc;
   flex-shrink: 0;
   box-shadow: inset 0 0 12px rgba(99, 102, 241, 0.2);
 }

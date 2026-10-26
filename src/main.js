@@ -81,15 +81,37 @@ function getGameIconEmoji(iconName) {
   return map[iconName] || "🎮";
 }
 
-// Kumpulan template SVG icon untuk tombol antarmuka yang tajam dan modern
+// Kumpulan template SVG icon untuk tombol antarmuka yang tajam, presisi, dan modern (SaaS standard)
 const SVG_ICONS = {
   menu: `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`,
-  chevronDown: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
-  chevronUp: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>`,
-  edit: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`,
-  trash: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>`,
+  chevronDown: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
+  chevronUp: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>`,
+  edit: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>`,
+  trash: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>`,
   plus: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
   close: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  gamepad: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" x2="10" y1="12" y2="12"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="6"/></svg>`,
+  mail: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`,
+  search: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`,
+  backup: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>`,
+  bulk: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>`,
+  user: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  logout: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>`,
+  key: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L16 7l-1.5-1.5-1.5 1.5 1.5 1.5-1.5 1.5-1.5-1.5-3.5 3.5a6.5 6.5 0 1 0 3 3l3.5-3.5Z"/></svg>`,
+  copy: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`,
+  refresh: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>`,
+  external: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>`,
+  link: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
+  wallet: `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>`,
+  calculator: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>`,
+  filter: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  bolt: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+  shield: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+  lock: `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`,
+  emptyBox: `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
+  checkSquare: `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`,
+  searchEmpty: `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`,
 };
 
 /**
@@ -221,17 +243,19 @@ function renderApp() {
     badgeTitle = "Tersimpan aman di database cloud pribadi Anda.";
   }
 
-  // 6. MEMBUAT STRUKTUR HTML UTAMA
+  // 6. MEMBUAT STRUKTUR HTML UTAMA (MODERN SAAS DESIGN - HUMAN CRAFTED)
   app.innerHTML = `
     <!-- Header Bagian Atas -->
     <header class="app-header ${isMobileMenuOpen ? "mobile-menu-active" : ""}">
       <div class="container header-inner">
         <div class="header-top-bar">
           <div class="logo-area">
-            <span class="logo-icon">🎮</span>
+            <div class="brand-avatar-box">
+              ${SVG_ICONS.gamepad}
+            </div>
             <div class="logo-text-group">
-              <div class="logo-title">Game & Email Hub</div>
-              <div class="logo-subtitle">Pilih game untuk melihat email mana saja yang terhubung dan statusnya</div>
+              <div class="logo-title">GameHub <span class="logo-badge">PRO</span></div>
+              <div class="logo-subtitle">Portofolio & Pengelolaan Akun Game Terpadu</div>
             </div>
           </div>
 
@@ -252,13 +276,14 @@ function renderApp() {
               authService.isLoggedIn()
                 ? `
               <div class="user-pill">
-                <span class="user-pill-email" title="${authService.getUser()?.email || "User"}">👤 ${authService.getUser()?.email || "User"}</span>
-                <button type="button" id="btn-logout" class="user-pill-logout" title="Keluar / Logout">🚪 Logout</button>
+                <span class="user-pill-email" title="${authService.getUser()?.email || "User"}">${SVG_ICONS.user} <span>${authService.getUser()?.email || "User"}</span></span>
+                <button type="button" id="btn-logout" class="user-pill-logout" title="Keluar / Logout">${SVG_ICONS.logout} <span>Keluar</span></button>
               </div>
             `
                 : `
-              <button class="btn btn-secondary btn-sm" id="btn-open-login" style="border-color:#818cf8; color:#a5b4fc;">
-                <span>🔑 Masuk / Daftar</span>
+              <button class="btn btn-secondary btn-sm" id="btn-open-login" style="border-color:rgba(99,102,241,0.4); color:#a5b4fc;">
+                ${SVG_ICONS.key}
+                <span>Masuk / Daftar</span>
               </button>
             `
             }
@@ -266,16 +291,20 @@ function renderApp() {
 
           <div class="header-buttons">
             <button class="btn btn-secondary btn-sm" id="btn-backup-data" title="Cadangan Data">
-              <span>💾 Backup</span>
+              ${SVG_ICONS.backup}
+              <span>Backup</span>
             </button>
             <button class="btn btn-secondary btn-sm btn-bulk-email" id="btn-bulk-email" title="Paste banyak email sekaligus">
-              <span>📥 + Bulk Email</span>
+              ${SVG_ICONS.bulk}
+              <span>Bulk Email</span>
             </button>
             <button class="btn btn-secondary btn-sm" id="btn-add-game">
-              <span>🎮 + Tambah Game</span>
+              ${SVG_ICONS.plus}
+              <span>Tambah Game</span>
             </button>
             <button class="btn btn-primary btn-sm btn-connect-primary" id="btn-connect-email">
-              <span>✉️ + Hubungkan Email</span>
+              ${SVG_ICONS.mail}
+              <span>Hubungkan Email</span>
             </button>
           </div>
         </div>
@@ -287,27 +316,37 @@ function renderApp() {
       <!-- Baris Kontrol: Kotak Pencarian & Filter Status -->
       <div class="filter-bar">
         <div class="search-wrapper">
-          <input 
-            type="text" 
-            class="search-input" 
-            id="search-input" 
-            placeholder="🔍 Cari nama game atau email..." 
-            value="${currentSearch}"
-          >
+          <div class="search-input-box">
+            <span class="search-icon-prefix">${SVG_ICONS.search}</span>
+            <input 
+              type="text" 
+              class="search-input" 
+              id="search-input" 
+              placeholder="Cari game, email, nickname, atau catatan..." 
+              value="${currentSearch}"
+            >
+          </div>
         </div>
 
         <div class="status-pills-group">
           <button class="status-pill ${currentStatusFilter === "all" ? "active" : ""}" data-status="all">
-            Semua Status
+            <span>Semua</span>
+            <span class="status-count-badge">${allRegistrations.length}</span>
           </button>
           <button class="status-pill ${currentStatusFilter === "live" ? "active" : ""}" data-status="live">
-            🟢 Live (${totalLive})
+            <span class="status-dot live"></span>
+            <span>Live</span>
+            <span class="status-count-badge">${totalLive}</span>
           </button>
           <button class="status-pill ${currentStatusFilter === "praregist" ? "active" : ""}" data-status="praregist">
-            🟡 Praregist (${totalPraregist})
+            <span class="status-dot praregist"></span>
+            <span>Praregist</span>
+            <span class="status-count-badge">${totalPraregist}</span>
           </button>
           <button class="status-pill ${currentStatusFilter === "maintenance" ? "active" : ""}" data-status="maintenance">
-            🔴 Maintenance (${totalMaintenance})
+            <span class="status-dot maintenance"></span>
+            <span>Maintenance</span>
+            <span class="status-count-badge">${totalMaintenance}</span>
           </button>
         </div>
       </div>
@@ -316,15 +355,16 @@ function renderApp() {
       <div class="game-checklist-section">
         <div class="checklist-header">
           <div class="checklist-title-group">
-            <span class="checklist-title">🎮 Daftar Game (Centang untuk Menampilkan):</span>
+            <span class="checklist-icon-indicator">${SVG_ICONS.filter}</span>
+            <span class="checklist-title">Filter Tampilan Game</span>
             <span class="checklist-count-badge">
-              (${currentSelectedGameIds.size} dari ${games.length} game dicentang)
+              ${currentSelectedGameIds.size} dari ${games.length} aktif
             </span>
           </div>
           <div class="checklist-quick-actions">
-            <button type="button" class="btn-text-link" id="btn-select-all-games">✓ Pilih Semua</button>
+            <button type="button" class="btn-text-link" id="btn-select-all-games">${SVG_ICONS.check} Pilih Semua</button>
             <span class="checklist-action-divider">•</span>
-            <button type="button" class="btn-text-link" id="btn-deselect-all-games">✕ Hapus Centang</button>
+            <button type="button" class="btn-text-link" id="btn-deselect-all-games">${SVG_ICONS.close} Hapus Centang</button>
           </div>
         </div>
 
@@ -338,8 +378,9 @@ function renderApp() {
               return `
               <label class="game-check-pill ${isChecked ? "checked" : ""}">
                 <input type="checkbox" data-game-check-id="${game.id}" ${isChecked ? "checked" : ""}>
-                <span class="game-check-title">🎮 ${game.title}</span>
-                <span class="game-check-badge">${gameEmailCount} email</span>
+                <span class="game-check-avatar" style="color: ${game.color || "#6366f1"};">${getGameIconEmoji(game.badgeIcon)}</span>
+                <span class="game-check-title">${game.title}</span>
+                <span class="game-check-badge">${gameEmailCount} akun</span>
               </label>
             `;
             })
@@ -352,47 +393,47 @@ function renderApp() {
         ${
           !authService.isLoggedIn()
             ? `
-          <div class="empty-state" style="background:rgba(99,102,241,0.06); border:1px dashed rgba(99,102,241,0.3); border-radius:var(--radius-lg); padding:3rem 1.5rem;">
-            <span style="font-size:3rem; margin-bottom:0.5rem; display:block;">🔒</span>
-            <h3 style="font-size:1.35rem; color:#fff; margin-bottom:0.4rem;">Akses Dilindungi & Terisolasi</h3>
-            <p style="font-size:0.9rem; color:var(--text-secondary); max-width:480px; margin:0 auto 1.25rem; line-height:1.5;">
+          <div class="empty-state auth-locked-empty">
+            <div class="empty-state-icon-box">${SVG_ICONS.lock}</div>
+            <h3 class="empty-state-title">Akses Dilindungi & Terenkripsi</h3>
+            <p class="empty-state-desc">
               Seluruh data game, akun, dan email terisolasi secara privat di database terenkripsi. Silakan masuk atau daftarkan akun baru Anda (1 IP = 1 Akun) untuk mulai mengelola data.
             </p>
-            <button class="btn btn-primary" id="btn-guest-login" style="padding:0.7rem 1.5rem; font-weight:700;">
-              🔑 Masuk / Daftar Akun Sekarang
+            <button class="btn btn-primary" id="btn-guest-login" style="padding:0.65rem 1.4rem;">
+              ${SVG_ICONS.key} <span>Masuk / Daftar Akun</span>
             </button>
           </div>
         `
             : games.length === 0
               ? `
           <div class="empty-state">
-            <span style="font-size:2.8rem;">🎮</span>
-            <h3 style="font-size:1.2rem; color:#fff; margin-bottom:0.35rem;">Ruang Kerja Anda Masih Kosong</h3>
-            <p style="font-size:0.85rem; color:var(--text-secondary); max-width:420px; margin:0 auto 1.2rem;">
-              Database baru Anda telah siap! Mulailah dengan menambahkan game pertama Anda.
+            <div class="empty-state-icon-box">${SVG_ICONS.emptyBox}</div>
+            <h3 class="empty-state-title">Ruang Kerja Masih Kosong</h3>
+            <p class="empty-state-desc">
+              Database baru Anda telah siap! Mulailah dengan menambahkan game pertama Anda ke dalam portofolio.
             </p>
-            <button class="btn btn-primary btn-sm" id="btn-empty-add-game">🎮 + Tambah Game Pertama</button>
+            <button class="btn btn-primary btn-sm" id="btn-empty-add-game">${SVG_ICONS.plus} <span>Tambah Game Pertama</span></button>
           </div>
         `
             : currentSelectedGameIds.size === 0
             ? `
           <!-- Tampilan saat semua game di-uncheck -->
           <div class="empty-state">
-            <span style="font-size:2.5rem;">☑️</span>
-            <h3 style="font-size:1.15rem; color:#fff;">Tidak Ada Game yang Dicentang</h3>
-            <p style="font-size:0.85rem; color:var(--text-secondary);">
-              Silakan centang game pada daftar di atas untuk melihat email dan status akun yang terhubung.
+            <div class="empty-state-icon-box">${SVG_ICONS.checkSquare}</div>
+            <h3 class="empty-state-title">Tidak Ada Game yang Dipilih</h3>
+            <p class="empty-state-desc">
+              Silakan centang game pada panel filter di atas untuk melihat email dan status akun yang terhubung.
             </p>
-            <button class="btn btn-primary btn-sm" id="btn-empty-select-all">✓ Centang Semua Game</button>
+            <button class="btn btn-primary btn-sm" id="btn-empty-select-all">${SVG_ICONS.check} <span>Pilih Semua Game</span></button>
           </div>
         `
             : displayedGames.length === 0
               ? `
           <!-- Tampilan saat hasil pencarian tidak menemukan kecocokan -->
           <div class="empty-state">
-            <span style="font-size:2.5rem;">🔍</span>
-            <h3 style="font-size:1.15rem; color:#fff;">Tidak Ada Data yang Cocok</h3>
-            <p style="font-size:0.85rem; color:var(--text-secondary);">
+            <div class="empty-state-icon-box">${SVG_ICONS.searchEmpty}</div>
+            <h3 class="empty-state-title">Tidak Ada Data yang Cocok</h3>
+            <p class="empty-state-desc">
               Game yang dicentang tidak memiliki akun yang sesuai dengan pencarian atau filter status saat ini.
             </p>
           </div>
@@ -438,22 +479,24 @@ function renderApp() {
                       rateIdr > 0 ? (totalLiveCurrency / rateUnit) * rateIdr : 0;
 
                     return `
-            <div class="game-main-card ${isCollapsed ? "collapsed" : ""}" data-game-id="${game.id}" style="border-left: 4px solid ${game.color || "#6366f1"};">
+            <div class="game-main-card ${isCollapsed ? "collapsed" : ""}" data-game-id="${game.id}">
+              <div class="game-accent-line" style="background: linear-gradient(90deg, ${game.color || "#6366f1"} 0%, transparent 80%);"></div>
+
               <!-- Header Kartu Game -->
               <div class="game-card-header">
                 <!-- Baris 1: Judul Game & Identitas + Tombol Collapse -->
                 <div class="game-header-top-row">
                   <div class="game-title-group" data-action="toggle-collapse-game" data-game-id="${game.id}" title="Klik untuk ${isCollapsed ? "membuka" : "menciutkan"} list email">
-                    <div class="game-icon-avatar" style="background:${game.color || "#6366f1"}22; border:1px solid ${game.color || "#6366f1"}44;">
+                    <div class="game-icon-avatar" style="background:${game.color || "#6366f1"}1a; border-color:${game.color || "#6366f1"}44;">
                       ${getGameIconEmoji(game.badgeIcon)}
                     </div>
                     <div class="game-title-meta">
                       <span class="game-title-text">${game.title}</span>
-                      <span class="game-count-badge">${gameRegs.length} Email Terhubung</span>
+                      <span class="game-count-badge">${gameRegs.length} Akun</span>
                     </div>
                   </div>
 
-                  <button class="btn btn-secondary btn-icon-square btn-collapse-toggle" data-action="toggle-collapse-game" data-game-id="${game.id}" title="${isCollapsed ? "Buka list email game ini" : "Sembunyikan / ciutkan list email game ini"}">
+                  <button class="btn btn-secondary btn-icon-square btn-collapse-toggle" data-action="toggle-collapse-game" data-game-id="${game.id}" title="${isCollapsed ? "Buka rincian email game ini" : "Ciutkan rincian email game ini"}">
                     ${isCollapsed ? SVG_ICONS.chevronDown : SVG_ICONS.chevronUp}
                   </button>
                 </div>
@@ -464,16 +507,16 @@ function renderApp() {
                   <div class="game-meta-row">
                     ${
                       game.economyType === "nft" || game.contractAddress
-                        ? `<span class="game-meta-tag tag-web3" title="Game Web3 / NFT">⚡ Web3 / NFT</span>`
-                        : `<span class="game-meta-tag tag-web2" title="Game Web2 / RMT">🎮 Web2 / RMT</span>`
+                        ? `<span class="game-meta-tag tag-web3" title="Game Web3 / NFT">${SVG_ICONS.bolt} <span>Web3 / DEX</span></span>`
+                        : `<span class="game-meta-tag tag-web2" title="Game Web2 / RMT">${SVG_ICONS.shield} <span>Web2 / RMT</span></span>`
                     }
-                    ${game.platform ? `<span class="game-meta-tag tag-platform">💻 ${game.platform}</span>` : ""}
+                    ${game.platform ? `<span class="game-meta-tag tag-platform">${game.platform}</span>` : ""}
                     ${
                       (game.economyType === "nft" || game.contractAddress) && game.contractAddress
                         ? `
                       <span class="game-meta-tag tag-ca" title="Smart Contract Address: ${game.contractAddress}">
-                        <span class="ca-text">🔗 CA: ${game.contractAddress.slice(0, 6)}...${game.contractAddress.slice(-4)}</span>
-                        <button type="button" class="btn-copy-ca" data-ca="${game.contractAddress}" style="background:none; border:none; color:#93c5fd; cursor:pointer; padding:0 0.2rem;" title="Salin Contract Address">📋</button>
+                        <span class="ca-text">${SVG_ICONS.link} CA: ${game.contractAddress.slice(0, 6)}...${game.contractAddress.slice(-4)}</span>
+                        <button type="button" class="btn-copy-ca" data-ca="${game.contractAddress}" title="Salin Contract Address">${SVG_ICONS.copy}</button>
                       </span>
                     `
                         : ""
@@ -482,10 +525,10 @@ function renderApp() {
                       rateIdr > 0
                         ? `
                       <span class="game-meta-tag rate-pill" title="Rate Konversi: Rp ${rateIdr.toLocaleString("id-ID")} per ${rateUnit.toLocaleString("id-ID")} ${game.currencyIcon || "🪙"}">
-                        <span class="rate-text">${game.economyType === "nft" ? "⚡ Live Rate:" : "💱 Rate:"} Rp ${rateIdr.toLocaleString("id-ID")} / ${rateUnit.toLocaleString("id-ID")} ${game.currencyIcon || "🪙"}</span>
+                        <span class="rate-text">${game.economyType === "nft" ? "Live Rate:" : "Kurs:"} Rp ${rateIdr.toLocaleString("id-ID")} / ${rateUnit.toLocaleString("id-ID")} ${game.currencyIcon || "🪙"}</span>
                         ${
                           (game.economyType === "nft" || game.contractAddress) && game.contractAddress
-                            ? `<button type="button" class="btn-refresh-crypto" data-game-id="${game.id}" data-ca="${game.contractAddress}" style="background:none; border:none; color:#fef08a; cursor:pointer; font-size:0.75rem; padding:0 0.2rem;" title="Perbarui harga token real-time">🔄</button>`
+                            ? `<button type="button" class="btn-refresh-crypto" data-game-id="${game.id}" data-ca="${game.contractAddress}" title="Perbarui harga token real-time">${SVG_ICONS.refresh}</button>`
                             : ""
                         }
                       </span>
@@ -495,8 +538,8 @@ function renderApp() {
                     ${
                       game.officialUrl
                         ? `
-                      <a href="${game.officialUrl}" target="_blank" rel="noopener noreferrer" class="game-link-pill" title="Kunjungi Tautan" onclick="event.stopPropagation();">
-                        🌐 Link ↗
+                      <a href="${game.officialUrl}" target="_blank" rel="noopener noreferrer" class="game-link-pill" title="Kunjungi Website Resmi" onclick="event.stopPropagation();">
+                        <span>Website</span> ${SVG_ICONS.external}
                       </a>
                     `
                         : ""
@@ -521,7 +564,7 @@ function renderApp() {
                     <div class="game-buttons-group">
                       <button class="btn btn-primary btn-connect-game" data-action="connect-email-to-this-game" data-game-id="${game.id}">
                         ${SVG_ICONS.plus}
-                        <span>Hubungkan Email</span>
+                        <span>Hubungkan</span>
                       </button>
                       <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-game" data-id="${game.id}" title="Edit Detail Game">
                         ${SVG_ICONS.edit}
@@ -539,12 +582,12 @@ function renderApp() {
                   ? `
                 <!-- Ringkasan Singkat Saat Card Diciutkan (Collapsed) -->
                 <div class="collapsed-email-summary" data-action="toggle-collapse-game" data-game-id="${game.id}" title="Klik untuk membuka rincian email game ini">
-                  <span style="font-weight:700; color:#fff;">📁 ${gameRegs.length} Email Terhubung:</span>
-                  <span class="status-summary-tag live">🟢 ${gameRegs.filter((r) => r.status === "live").length} Live</span>
-                  <span class="status-summary-tag praregist">🟡 ${gameRegs.filter((r) => r.status === "praregist").length} Praregist</span>
-                  ${gameRegs.some((r) => r.status === "maintenance") ? `<span class="status-summary-tag maintenance">🔴 ${gameRegs.filter((r) => r.status === "maintenance").length} Maint</span>` : ""}
-                  ${totalLiveCurrency > 0 ? `<span class="status-summary-tag" style="background:rgba(234,179,8,0.15); color:#fde047; border:1px solid rgba(234,179,8,0.35);">${game.currencyIcon || "🪙"} Total: ${totalLiveCurrency.toLocaleString("id-ID")}${estimatedTotalIdr > 0 ? ` <strong style="color:#6ee7b7; margin-left:0.25rem;">(≈ Rp ${Math.round(estimatedTotalIdr).toLocaleString("id-ID")})</strong>` : ""}</span>` : ""}
-                  <span style="margin-left:auto; font-size:0.75rem; color:var(--primary); font-weight:600;">Klik untuk membuka list email ▼</span>
+                  <span class="collapsed-summary-header">${SVG_ICONS.mail} <span>${gameRegs.length} Email Terhubung:</span></span>
+                  <span class="status-summary-tag live"><span class="status-dot live"></span> ${gameRegs.filter((r) => r.status === "live").length} Live</span>
+                  <span class="status-summary-tag praregist"><span class="status-dot praregist"></span> ${gameRegs.filter((r) => r.status === "praregist").length} Praregist</span>
+                  ${gameRegs.some((r) => r.status === "maintenance") ? `<span class="status-summary-tag maintenance"><span class="status-dot maintenance"></span> ${gameRegs.filter((r) => r.status === "maintenance").length} Maint</span>` : ""}
+                  ${totalLiveCurrency > 0 ? `<span class="status-summary-tag tag-currency">${game.currencyIcon || "🪙"} ${totalLiveCurrency.toLocaleString("id-ID")}${estimatedTotalIdr > 0 ? ` <strong class="currency-idr-sub">(≈ Rp ${Math.round(estimatedTotalIdr).toLocaleString("id-ID")})</strong>` : ""}</span>` : ""}
+                  <span class="collapsed-expand-hint">Rincian ${SVG_ICONS.chevronDown}</span>
                 </div>
               `
                   : `
@@ -554,7 +597,7 @@ function renderApp() {
                     gameRegs.length === 0
                       ? `
                     <div class="empty-emails-msg">
-                      Belum ada email yang terhubung ke game <strong>${game.title}</strong>. Klik <strong>+ Hubungkan Email</strong> di atas untuk mendaftarkan akun.
+                      Belum ada email yang terhubung ke game <strong>${game.title}</strong>. Klik <strong>+ Hubungkan</strong> di atas untuk mendaftarkan akun.
                     </div>
                   `
                       : gameRegs
@@ -572,15 +615,15 @@ function renderApp() {
                       <div class="email-item-row" data-reg-id="${reg.id}">
                         <div class="email-info-cell">
                           <div class="email-address-text">
-                            <span>✉️</span>
+                            <span class="email-icon-prefix">${SVG_ICONS.mail}</span>
                             <span class="email-addr-text">${reg.email.address}</span>
                             <span class="multi-game-badge" title="Email ini juga terdaftar di game: ${otherGameNames}">
-                              🔗 Terhubung di ${totalGamesForThisEmail.length} game
+                              ${SVG_ICONS.link} <span>${totalGamesForThisEmail.length} Game</span>
                             </span>
                           </div>
                           <div class="email-sub-detail">
-                            ${reg.ign && reg.ign !== "-" ? `<span>IGN / Akun: <strong style="color:#fff;">${reg.ign}</strong></span>` : ""}
-                            ${reg.notes ? `<span style="color:var(--text-muted); font-style:italic;">(${reg.notes})</span>` : ""}
+                            ${reg.ign && reg.ign !== "-" ? `<span>IGN: <strong style="color:#fff;">${reg.ign}</strong></span>` : ""}
+                            ${reg.notes ? `<span class="email-notes-text">(${reg.notes})</span>` : ""}
                           </div>
                         </div>
 
@@ -594,7 +637,7 @@ function renderApp() {
                                 <span>${(Number(reg.currency) || 0).toLocaleString("id-ID")}</span>
                                 ${
                                   rateIdr > 0 && Number(reg.currency) > 0
-                                    ? `<span style="font-size:0.72rem; color:#6ee7b7; font-weight:600; opacity:0.95; margin-left:0.2rem;">(≈ Rp ${Math.round(((Number(reg.currency) || 0) / rateUnit) * rateIdr).toLocaleString("id-ID")})</span>`
+                                    ? `<span class="email-currency-idr-sub">(≈ Rp ${Math.round(((Number(reg.currency) || 0) / rateUnit) * rateIdr).toLocaleString("id-ID")})</span>`
                                     : ""
                                 }
                               </div>
@@ -604,15 +647,15 @@ function renderApp() {
 
                             <!-- Dropdown Status Cepat (Bisa langsung diubah tanpa buka modal) -->
                             <select class="status-dropdown ${reg.status}" data-action="change-status" data-reg-id="${reg.id}">
-                              <option value="live" ${reg.status === "live" ? "selected" : ""}>🟢 Live (Rilis)</option>
-                              <option value="praregist" ${reg.status === "praregist" ? "selected" : ""}>🟡 Praregist</option>
-                              <option value="maintenance" ${reg.status === "maintenance" ? "selected" : ""}>🔴 Maintenance</option>
+                              <option value="live" ${reg.status === "live" ? "selected" : ""}>Live</option>
+                              <option value="praregist" ${reg.status === "praregist" ? "selected" : ""}>Praregist</option>
+                              <option value="maintenance" ${reg.status === "maintenance" ? "selected" : ""}>Maintenance</option>
                             </select>
                           </div>
 
                           <div class="email-buttons-group">
                             <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-email-details" data-email-id="${reg.email.id}" title="Edit Alamat & Data Email Ini">
-                              ✉️
+                              ${SVG_ICONS.mail}
                             </button>
                             <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-reg" data-reg-id="${reg.id}" title="Edit Catatan Akun & Saldo Game">
                               ${SVG_ICONS.edit}
@@ -644,8 +687,8 @@ function renderApp() {
         <div class="footer-main-row">
           <div class="footer-total-box">
             <div class="footer-total-label">
-              <span>💰</span>
-              <span>TOTAL ESTIMASI PENDAPATAN (IDR)</span>
+              ${SVG_ICONS.wallet}
+              <span>TOTAL ESTIMASI NILAI PORTOFOLIO (IDR)</span>
             </div>
             <div class="footer-total-amount">
               Rp ${grandTotalIdr.toLocaleString("id-ID")}
@@ -668,7 +711,7 @@ function renderApp() {
 
         <!-- Formula Baris: ( game a + game b + game c = xxx ) -->
         <div class="footer-formula-bar">
-          <span class="formula-label">📐 Rincian Penjumlahan:</span>
+          <span class="formula-label">${SVG_ICONS.calculator} Kalkulasi:</span>
           <div class="formula-expression">
             ( ${formulaString} )
           </div>
@@ -698,7 +741,7 @@ function renderApp() {
       () => {
         authService.logout();
       },
-      "🚪 Keluar Akun",
+      "Keluar Akun",
       "btn-danger"
     );
   });
