@@ -1,5 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
+/* ==========================================================================
+   DESIGN TOKENS & SYSTEM VARIABLES
+   ========================================================================== */
 :root {
   --bg-app: #080c14;
   --bg-card: #111726;
@@ -9,6 +12,7 @@
 
   --border-card: rgba(255, 255, 255, 0.08);
   --border-focus: #6366f1;
+  --border-subtle: rgba(255, 255, 255, 0.05);
 
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
@@ -16,8 +20,9 @@
 
   --primary: #4f46e5;
   --primary-hover: #4338ca;
+  --primary-glow: rgba(99, 102, 241, 0.35);
 
-  /* Status Colors: Kontras & Jelas */
+  /* Status Colors */
   --status-live: #10b981;
   --status-live-bg: rgba(16, 185, 129, 0.15);
   --status-live-border: rgba(16, 185, 129, 0.4);
@@ -30,45 +35,87 @@
   --status-maint-bg: rgba(239, 68, 68, 0.15);
   --status-maint-border: rgba(239, 68, 68, 0.4);
 
+  --currency-gold: #fde047;
+  --currency-gold-bg: rgba(234, 179, 8, 0.1);
+  --currency-gold-border: rgba(234, 179, 8, 0.35);
+
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 14px;
+  --radius-xl: 18px;
   --radius-pill: 999px;
 
-  --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Outfit', var(--font-sans);
   --font-mono: 'JetBrains Mono', monospace;
+
+  --header-height: 72px;
 }
 
-* {
+/* ==========================================================================
+   RESET & FOUNDATION
+   ========================================================================== */
+*, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  min-height: 100vh;
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-app);
   color: var(--text-primary);
-  min-height: 100vh;
   line-height: 1.5;
-  padding-bottom: 3rem;
+  padding-bottom: max(3rem, env(safe-area-inset-bottom, 3rem));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+img, svg {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+/* ==========================================================================
+   CONTAINER & LAYOUT
+   ========================================================================== */
 .container {
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1240px;
   margin: 0 auto;
   padding: 0 1.25rem;
 }
 
-/* Header */
+/* ==========================================================================
+   APP HEADER (STICKY & RESPONSIVE)
+   ========================================================================== */
 .app-header {
-  background: var(--bg-card);
+  background: rgba(17, 23, 38, 0.92);
   border-bottom: 1px solid var(--border-card);
-  padding: 1rem 0;
   position: sticky;
   top: 0;
   z-index: 50;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 0.85rem 0;
+  transition: all 0.2s ease;
 }
 
 .header-inner {
@@ -83,40 +130,70 @@ body {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  min-width: 0;
+  text-decoration: none;
 }
 
 .logo-icon {
-  font-size: 1.6rem;
+  font-size: 1.65rem;
+  line-height: 1;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.35));
+}
+
+.logo-text-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .logo-title {
-  font-size: 1.2rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
   font-weight: 800;
   color: #fff;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
 .logo-subtitle {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--text-secondary);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 480px;
 }
 
-.header-buttons {
+.header-right-panel {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.header-status-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
 }
 
 .storage-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.35rem 0.75rem;
+  gap: 0.4rem;
+  padding: 0.3rem 0.65rem;
   background: rgba(16, 185, 129, 0.12);
   border: 1px solid rgba(16, 185, 129, 0.35);
-  border-radius: var(--radius-full);
-  font-size: 0.76rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
   font-weight: 600;
   color: #34d399;
+  white-space: nowrap;
+  user-select: none;
 }
 
 .storage-badge .badge-dot {
@@ -125,9 +202,56 @@ body {
   background-color: #10b981;
   border-radius: 50%;
   box-shadow: 0 0 8px #10b981;
+  flex-shrink: 0;
 }
 
-/* Buttons */
+.user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(99, 102, 241, 0.12);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  font-size: 0.76rem;
+  max-width: 100%;
+}
+
+.user-pill-email {
+  color: #a5b4fc;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+.user-pill-logout {
+  background: none;
+  border: none;
+  color: #f87171;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0 0.15rem;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.user-pill-logout:hover {
+  opacity: 0.8;
+}
+
+.header-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   BUTTONS (UNIFIED DESIGN SYSTEM)
+   ========================================================================== */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -135,13 +259,15 @@ body {
   gap: 0.45rem;
   padding: 0.55rem 0.95rem;
   border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.15s ease;
   white-space: nowrap;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .btn:active {
@@ -151,9 +277,13 @@ body {
 .btn-primary {
   background: var(--primary);
   color: #ffffff;
+  box-shadow: 0 2px 10px rgba(79, 70, 229, 0.35);
 }
+
 .btn-primary:hover {
   background: var(--primary-hover);
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.5);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
@@ -161,8 +291,12 @@ body {
   color: var(--text-primary);
   border-color: var(--border-card);
 }
+
 .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 .btn-danger {
@@ -170,15 +304,73 @@ body {
   color: #fca5a5;
   border-color: var(--status-maint-border);
 }
+
 .btn-danger:hover {
   background: rgba(239, 68, 68, 0.25);
   color: #fff;
 }
 
 .btn-sm {
-  padding: 0.35rem 0.65rem;
-  font-size: 0.75rem;
+  padding: 0.38rem 0.7rem;
+  font-size: 0.78rem;
   border-radius: var(--radius-sm);
+}
+
+.btn-icon-square {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-card);
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.btn-icon-square svg {
+  display: block;
+  stroke: currentColor;
+  pointer-events: none;
+  width: 15px;
+  height: 15px;
+}
+
+.btn-icon-square:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.btn-icon-square.btn-collapse-toggle {
+  color: #94a3b8;
+}
+
+.btn-icon-square.btn-collapse-toggle:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.btn-icon-square.btn-action-edit:hover {
+  background: rgba(99, 102, 241, 0.18);
+  border-color: rgba(99, 102, 241, 0.5);
+  color: #a5b4fc;
+}
+
+.btn-icon-square.btn-action-delete:hover {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #f87171;
 }
 
 .btn-icon-only {
@@ -189,12 +381,15 @@ body {
   background: transparent;
   cursor: pointer;
 }
+
 .btn-icon-only:hover {
   color: #fff;
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* Filter & Search Bar */
+/* ==========================================================================
+   FILTER & SEARCH BAR
+   ========================================================================== */
 .filter-bar {
   display: flex;
   align-items: center;
@@ -205,8 +400,8 @@ body {
 }
 
 .search-wrapper {
-  flex: 1;
-  min-width: 250px;
+  flex: 1 1 260px;
+  min-width: 0;
 }
 
 .search-input {
@@ -218,22 +413,28 @@ body {
   color: var(--text-primary);
   font-size: 0.88rem;
   outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  min-height: 42px;
 }
+
 .search-input:focus {
   border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
+
 .search-input::placeholder {
   color: var(--text-muted);
 }
 
 .status-pills-group {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   background: var(--bg-card);
   padding: 0.3rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-card);
+  flex-wrap: wrap;
 }
 
 .status-pill {
@@ -242,13 +443,16 @@ body {
   color: var(--text-secondary);
   font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.35rem 0.75rem;
+  padding: 0.4rem 0.75rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
   transition: all 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
 }
 
 .status-pill:hover {
@@ -258,9 +462,12 @@ body {
 .status-pill.active {
   background: var(--bg-subtle);
   color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-/* Game Checklist Filter */
+/* ==========================================================================
+   GAME CHECKLIST FILTER SECTION
+   ========================================================================== */
 .game-checklist-section {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
@@ -280,19 +487,51 @@ body {
   flex-wrap: wrap;
 }
 
+.checklist-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .checklist-title {
   font-size: 0.88rem;
   font-weight: 700;
   color: #fff;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
-.checklist-actions {
-  display: flex;
+.checklist-count-badge {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+.checklist-quick-actions {
+  display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+}
+
+.btn-text-link {
+  background: none;
+  border: none;
+  color: #818cf8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+}
+
+.btn-text-link:hover {
+  color: #c7d2fe;
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.checklist-action-divider {
+  color: var(--text-muted);
+  font-size: 0.7rem;
 }
 
 .checklist-grid {
@@ -305,16 +544,17 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.45rem 0.85rem;
+  padding: 0.4rem 0.8rem;
   background: var(--bg-subtle);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   user-select: none;
   transition: all 0.15s ease;
+  min-height: 36px;
 }
 
 .game-check-pill:hover {
@@ -328,6 +568,7 @@ body {
   height: 16px;
   accent-color: var(--primary);
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .game-check-pill.checked {
@@ -337,33 +578,30 @@ body {
   box-shadow: 0 0 10px rgba(99, 102, 241, 0.15);
 }
 
+.game-check-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
 .game-check-badge {
   font-size: 0.7rem;
-  padding: 0.1rem 0.4rem;
+  padding: 0.1rem 0.45rem;
   border-radius: var(--radius-pill);
   background: var(--bg-card);
   color: var(--text-muted);
+  flex-shrink: 0;
 }
+
 .game-check-pill.checked .game-check-badge {
   background: var(--primary);
   color: #fff;
 }
 
-/* Multi-game linked badge on email row */
-.multi-game-badge {
-  font-size: 0.68rem;
-  padding: 0.12rem 0.45rem;
-  border-radius: var(--radius-pill);
-  background: rgba(99, 102, 241, 0.15);
-  color: #a5b4fc;
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-/* Games List Container (Game-Centric View) */
+/* ==========================================================================
+   GAMES LIST & MAIN CARDS
+   ========================================================================== */
 .games-list-container {
   display: flex;
   flex-direction: column;
@@ -374,19 +612,19 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: 1.15rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-  transition: border-color 0.15s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.28);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .game-main-card:hover {
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
 }
 
-/* Header Kartu Game */
 /* Header Kartu Game */
 .game-card-header {
   display: flex;
@@ -407,9 +645,11 @@ body {
 .game-title-group {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
   cursor: pointer;
   user-select: none;
+  min-width: 0;
+  flex: 1;
   transition: opacity 0.15s ease;
 }
 
@@ -424,49 +664,43 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
+  font-size: 1.45rem;
   flex-shrink: 0;
 }
 
 .game-title-meta {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* Jarak antara Nama Game dan Badge Email Terhubung */
+  gap: 0.65rem;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .game-title-text {
+  font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 800;
   color: #fff;
-}
-
-.game-pub-pill {
-  font-size: 0.73rem;
-  padding: 0.15rem 0.55rem;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-secondary);
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  line-height: 1.2;
+  word-break: break-word;
 }
 
 .game-count-badge {
-  font-size: 0.75rem;
+  font-size: 0.74rem;
   padding: 0.2rem 0.6rem;
   border-radius: var(--radius-pill);
   background: rgba(99, 102, 241, 0.15);
   color: #a5b4fc;
   border: 1px solid rgba(99, 102, 241, 0.3);
   font-weight: 600;
-  display: inline-flex;
-  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-/* Baris 2: Sejajar Horizontal - Detail Game (Kiri) & Aksi/Edit (Kanan) */
+/* Baris 2: Sejajar - Detail Game (Kiri) & Aksi/Edit (Kanan) */
 .game-header-bottom-row {
   display: flex;
-  align-items: flex-start; /* Sejajar dengan baris (row) pertama sebelah kiri */
+  align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
   width: 100%;
@@ -477,57 +711,86 @@ body {
 .game-meta-row {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   flex-wrap: wrap;
-  max-width: 500px; /* Batasi lebar agar maksimal 3 badge per baris sebelum turun ke bawah */
-  margin-top: 0;
+  max-width: 100%;
 }
 
 .game-meta-tag {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  box-sizing: border-box !important;
-  padding: 0 0.65rem !important;
-  border-radius: var(--radius-sm) !important;
+  min-height: 30px;
+  height: auto;
+  box-sizing: border-box;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-secondary);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 0.35rem;
-  font-size: 0.78rem !important;
+  font-size: 0.76rem;
   font-weight: 500;
-  line-height: 1;
+  line-height: 1.2;
   white-space: nowrap;
+}
+
+.game-meta-tag.tag-web3 {
+  background: rgba(99, 102, 241, 0.18);
+  color: #a5b4fc;
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.game-meta-tag.tag-web2 {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.game-meta-tag.tag-platform {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary);
+}
+
+.game-meta-tag.tag-ca {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+
+.btn-copy-ca {
+  background: none;
+  border: none;
+  color: #93c5fd;
+  cursor: pointer;
+  padding: 0 0.15rem;
+  display: inline-flex;
+  align-items: center;
 }
 
 .game-meta-tag.rate-pill {
   background: rgba(234, 179, 8, 0.08);
   color: #fde047;
-  border-color: rgba(234, 179, 8, 0.28);
+  border-color: rgba(234, 179, 8, 0.3);
   font-weight: 600;
 }
 
 .game-link-pill {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  box-sizing: border-box !important;
-  padding: 0 0.65rem !important;
-  border-radius: var(--radius-sm) !important;
+  min-height: 30px;
+  box-sizing: border-box;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm);
   background: rgba(99, 102, 241, 0.15);
   color: #a5b4fc;
   border: 1px solid rgba(99, 102, 241, 0.35);
   text-decoration: none;
   font-weight: 600;
-  font-size: 0.78rem !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  font-size: 0.76rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 0.35rem;
-  line-height: 1;
   white-space: nowrap;
   transition: all 0.15s ease;
 }
@@ -538,7 +801,7 @@ body {
   border-color: rgba(99, 102, 241, 0.6);
 }
 
-/* Kanan: Kumpulan Badge Edit, Mata Uang, & Tombol Aksi */
+/* Kanan: Badge Saldo & Tombol Aksi */
 .game-card-actions {
   display: inline-flex;
   align-items: center;
@@ -547,123 +810,19 @@ body {
   margin-left: auto;
 }
 
-/* Tombol icon seragam & simetris (Collapse, Edit, Delete) */
-.btn-icon-square {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
-  box-sizing: border-box !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: var(--radius-sm) !important;
-  background: var(--bg-subtle) !important;
-  border: 1px solid var(--border-card) !important;
-  color: var(--text-secondary) !important;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.15s ease;
-  user-select: none;
-}
-
-.btn-icon-square svg {
-  display: block;
-  stroke: currentColor;
-  pointer-events: none;
-}
-
-.btn-icon-square:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-color: rgba(255, 255, 255, 0.25) !important;
-  color: #fff !important;
-  transform: translateY(-1px);
-}
-
-.btn-icon-square:active {
-  transform: translateY(0);
-}
-
-.btn-icon-square.btn-collapse-toggle {
-  color: #94a3b8 !important;
-}
-
-.btn-icon-square.btn-collapse-toggle:hover {
-  color: #fff !important;
-  background: rgba(255, 255, 255, 0.12) !important;
-}
-
-.btn-icon-square.btn-action-edit:hover {
-  background: rgba(99, 102, 241, 0.18) !important;
-  border-color: rgba(99, 102, 241, 0.5) !important;
-  color: #a5b4fc !important;
-}
-
-.btn-icon-square.btn-action-delete:hover {
-  background: rgba(239, 68, 68, 0.18) !important;
-  border-color: rgba(239, 68, 68, 0.5) !important;
-  color: #f87171 !important;
-}
-
-/* Connect email button (Tinggi sama: 32px) */
-.btn-connect-game {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  box-sizing: border-box !important;
-  padding: 0 0.8rem !important;
-  margin: 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.4rem;
-  border-radius: var(--radius-sm) !important;
-  font-size: 0.8rem !important;
-  font-weight: 600;
-  font-family: var(--font-sans);
-  white-space: nowrap;
-  flex-shrink: 0;
-  background: var(--primary) !important;
-  color: #fff !important;
-  border: 1px solid rgba(255, 255, 255, 0.15) !important;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  line-height: 1;
-}
-
-.btn-connect-game svg {
-  display: block;
-  stroke: currentColor;
-  pointer-events: none;
-}
-
-.btn-connect-game:hover {
-  background: var(--primary-hover) !important;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
-}
-
-/* Total In-game Currency in Game Header (Tinggi sama: 32px) */
 .game-total-currency-badge {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  box-sizing: border-box !important;
-  margin: 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+  min-height: 32px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 0.4rem;
-  padding: 0 0.75rem !important;
+  padding: 0.3rem 0.75rem;
   background: rgba(234, 179, 8, 0.1);
   border: 1px solid rgba(234, 179, 8, 0.38);
-  border-radius: var(--radius-sm) !important;
+  border-radius: var(--radius-sm);
   font-family: var(--font-mono);
-  font-size: 0.8rem !important;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #fde047;
   white-space: nowrap;
@@ -675,18 +834,7 @@ body {
 }
 
 .game-total-currency-badge .currency-symbol {
-  font-size: 0.9rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.game-total-currency-badge .currency-total-amount {
-  font-size: 0.82rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
+  font-size: 0.95rem;
 }
 
 .game-total-currency-badge .currency-badge-divider {
@@ -694,78 +842,54 @@ body {
   height: 14px;
   background: rgba(234, 179, 8, 0.35);
   display: inline-block;
-  margin: 0 0.1rem;
+  margin: 0 0.15rem;
 }
 
 .game-total-currency-badge .currency-idr-estimate {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: #6ee7b7;
   font-weight: 700;
-  line-height: 1;
+}
+
+.game-buttons-group {
   display: inline-flex;
   align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
-/* Individual Email Currency Badge (Only on Live status) */
-.email-currency-badge {
-  height: 32px !important;
-  min-height: 32px !important;
-  max-height: 32px !important;
-  box-sizing: border-box !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 0.35rem;
-  padding: 0 0.65rem;
-  background: rgba(234, 179, 8, 0.1);
-  border: 1px solid rgba(234, 179, 8, 0.35);
+.btn-connect-game {
+  min-height: 32px;
+  padding: 0.35rem 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   border-radius: var(--radius-sm);
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #fef08a;
+  font-size: 0.8rem;
+  font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
+  background: var(--primary);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   cursor: pointer;
   transition: all 0.15s ease;
-  line-height: 1;
 }
 
-.email-currency-badge:hover {
-  background: rgba(234, 179, 8, 0.2);
-  border-color: rgba(234, 179, 8, 0.6);
+.btn-connect-game:hover {
+  background: var(--primary-hover);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
 }
 
-.email-actions-cell .btn-icon-square {
-  width: 32px !important;
-  height: 32px !important;
-  min-width: 32px !important;
-  min-height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
-  border-radius: var(--radius-sm) !important;
-}
-
-.email-actions-cell .btn-icon-square svg {
-  width: 14px;
-  height: 14px;
-}
-
-.game-title-group {
-  cursor: pointer;
-  user-select: none;
-  transition: opacity 0.15s ease;
-}
-
-.game-title-group:hover {
-  opacity: 0.9;
-}
-
+/* ==========================================================================
+   COLLAPSED SUMMARY VIEW
+   ========================================================================== */
 .collapsed-email-summary {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
   padding: 0.65rem 0.95rem;
   background: rgba(255, 255, 255, 0.03);
   border: 1px dashed var(--border-card);
@@ -787,8 +911,9 @@ body {
 .status-summary-tag {
   font-size: 0.72rem;
   font-weight: 600;
-  padding: 0.12rem 0.45rem;
+  padding: 0.15rem 0.5rem;
   border-radius: var(--radius-pill);
+  white-space: nowrap;
 }
 
 .status-summary-tag.live {
@@ -809,18 +934,20 @@ body {
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-/* Daftar Email di dalam Game ini */
+/* ==========================================================================
+   EMAILS IN GAME LIST
+   ========================================================================== */
 .emails-in-game-list {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 
 .email-item-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.85rem;
   background: var(--bg-subtle);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
@@ -830,22 +957,44 @@ body {
 
 .email-item-row:hover {
   background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .email-info-cell {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .email-address-text {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 700;
   color: #fff;
   font-family: var(--font-mono);
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.email-addr-text {
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+.multi-game-badge {
+  font-size: 0.68rem;
+  padding: 0.12rem 0.45rem;
+  border-radius: var(--radius-pill);
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .email-sub-detail {
@@ -853,26 +1002,63 @@ body {
   color: var(--text-secondary);
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .email-actions-cell {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.55rem;
+  flex-shrink: 0;
 }
 
-/* Dropdown Status Langsung */
+.email-status-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.email-currency-badge {
+  min-height: 32px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0 0.65rem;
+  background: rgba(234, 179, 8, 0.1);
+  border: 1px solid rgba(234, 179, 8, 0.35);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fef08a;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.email-currency-badge:hover {
+  background: rgba(234, 179, 8, 0.2);
+  border-color: rgba(234, 179, 8, 0.6);
+  transform: translateY(-1px);
+}
+
 .status-dropdown {
   background: var(--bg-input);
   border: 1px solid var(--border-card);
-  padding: 0.4rem 0.75rem;
+  padding: 0.38rem 0.7rem;
   border-radius: var(--radius-md);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   outline: none;
   color: #fff;
+  min-height: 34px;
+  transition: border-color 0.15s ease;
 }
 
 .status-dropdown.live {
@@ -880,18 +1066,26 @@ body {
   border-color: var(--status-live-border);
   background: var(--status-live-bg);
 }
+
 .status-dropdown.praregist {
   color: var(--status-praregist);
   border-color: var(--status-praregist-border);
   background: var(--status-praregist-bg);
 }
+
 .status-dropdown.maintenance {
   color: var(--status-maint);
   border-color: var(--status-maint-border);
   background: var(--status-maint-bg);
 }
 
-/* Empty State inside a Game */
+.email-buttons-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
 .empty-emails-msg {
   padding: 1.25rem;
   text-align: center;
@@ -902,12 +1096,15 @@ body {
   border: 1px dashed var(--border-card);
 }
 
-/* Modal Dialogs */
+/* ==========================================================================
+   MODAL DIALOGS SYSTEM
+   ========================================================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -916,6 +1113,7 @@ body {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease;
+  overscroll-behavior: contain;
 }
 
 .modal-overlay.active {
@@ -932,8 +1130,20 @@ body {
   max-height: 88vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
   overflow: hidden;
+  animation: modalIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalIn {
+  from {
+    transform: scale(0.96) translateY(8px);
+    opacity: 0.8;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
 }
 
 .modal-header {
@@ -942,14 +1152,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 0.75rem;
   flex-shrink: 0;
   background: var(--bg-card);
 }
 
 .modal-title {
-  font-size: 1.1rem;
+  font-family: var(--font-display);
+  font-size: 1.12rem;
   font-weight: 700;
   color: #fff;
+  word-break: break-word;
 }
 
 .modal-body {
@@ -967,27 +1180,31 @@ body {
   width: 6px;
 }
 
-.modal-body::-webkit-scrollbar-track {
-  background: transparent;
-}
-
 .modal-body::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
 
-.modal-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.35);
+.modal-footer {
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--border-card);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  background: var(--bg-card);
+  flex-shrink: 0;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  width: 100%;
 }
 
 .form-label {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-secondary);
 }
@@ -1002,13 +1219,31 @@ body {
   font-size: 0.88rem;
   font-family: var(--font-sans);
   outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  min-height: 40px;
 }
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
-/* Radio status dalam modal */
+/* Modal Responsive Inputs */
+.email-input-action-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.email-input-btn-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+/* Radio Status dalam Modal */
 .status-radio-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1054,18 +1289,7 @@ body {
   border-color: var(--status-maint-border);
 }
 
-.modal-footer {
-  padding: 1rem 1.25rem;
-  border-top: 1px solid var(--border-card);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.6rem;
-  background: var(--bg-card);
-  flex-shrink: 0;
-}
-
-/* Toast */
+/* Toast Notifications */
 .toast-container {
   position: fixed;
   bottom: 1.5rem;
@@ -1075,6 +1299,7 @@ body {
   flex-direction: column;
   gap: 0.5rem;
   pointer-events: none;
+  max-width: calc(100% - 3rem);
 }
 
 .toast {
@@ -1086,10 +1311,13 @@ body {
   font-size: 0.85rem;
   color: #fff;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  word-break: break-word;
 }
+
 .toast.toast-success {
   border-color: var(--status-live-border);
 }
+
 .toast.toast-error {
   border-color: var(--status-maint-border);
 }
@@ -1097,7 +1325,7 @@ body {
 /* Empty State */
 .empty-state {
   text-align: center;
-  padding: 3rem 1.5rem;
+  padding: 2.75rem 1.5rem;
   background: var(--bg-card);
   border: 1px dashed var(--border-card);
   border-radius: var(--radius-lg);
@@ -1107,237 +1335,14 @@ body {
   gap: 0.75rem;
 }
 
-/* =========================================================
-   RESPONSIVE DESIGN SYSTEM (ALL WINDOW SIZES)
-   ========================================================= */
-
-/* Prevent horizontal overflow across the entire page */
-html, body {
-  overflow-x: hidden;
-  width: 100%;
-}
-
-/* Tablet & Intermediate Screens (<= 1024px) */
-@media (max-width: 1024px) {
-  .container {
-    padding: 0 1rem;
-  }
-
-  .game-card-header {
-    gap: 0.65rem;
-  }
-
-  .checklist-grid {
-    gap: 0.45rem;
-  }
-}
-
-/* Mobile & Tablet Portrait (<= 768px) */
-@media (max-width: 768px) {
-  .app-header {
-    padding: 0.75rem 0;
-  }
-
-  .header-inner {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-
-  .logo-area {
-    justify-content: flex-start;
-  }
-
-  .header-buttons {
-    display: flex;
-    width: 100%;
-    justify-content: stretch;
-    gap: 0.4rem;
-  }
-
-  .header-buttons .btn {
-    flex: 1;
-    padding: 0.5rem 0.6rem;
-    font-size: 0.8rem;
-    white-space: nowrap;
-  }
-
-  .filter-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-    margin: 1rem 0;
-  }
-
-  .search-wrapper {
-    width: 100%;
-    min-width: unset;
-  }
-
-  .status-pills-group {
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    gap: 0.3rem;
-  }
-
-  .status-pill {
-    flex: 1 1 calc(50% - 0.3rem);
-    justify-content: center;
-    font-size: 0.78rem;
-    padding: 0.4rem 0.5rem;
-    text-align: center;
-  }
-
-  .checklist-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-  }
-
-  .checklist-actions {
-    display: flex;
-    width: 100%;
-    gap: 0.4rem;
-  }
-
-  .checklist-actions .btn {
-    flex: 1;
-  }
-
-  .checklist-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.4rem;
-  }
-
-  .game-check-pill {
-    width: 100%;
-    justify-content: space-between;
-    padding: 0.4rem 0.65rem;
-    font-size: 0.78rem;
-  }
-
-  .game-card-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-
-  .game-header-bottom-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.65rem;
-  }
-
-  .game-card-actions {
-    display: flex;
-    width: 100%;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.45rem;
-    margin-left: 0;
-  }
-
-  .game-card-actions .btn-connect-game {
-    flex: 1 1 auto;
-    min-width: 130px;
-  }
-
-  .email-item-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-    padding: 0.75rem;
-  }
-
-  .email-info-cell {
-    width: 100%;
-  }
-
-  .email-address-text {
-    flex-wrap: wrap;
-    word-break: break-all;
-    font-size: 0.88rem;
-    gap: 0.35rem;
-  }
-
-  .email-actions-cell {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .status-dropdown {
-    flex: 1;
-    min-height: 38px;
-    font-size: 0.8rem;
-  }
-
-  .modal-box {
-    width: 95%;
-    max-height: 94vh;
-    margin: 0 auto;
-  }
-
-  .modal-body {
-    padding: 1rem;
-    max-height: calc(94vh - 120px);
-    overflow-y: auto;
-  }
-}
-
-/* Small Smartphone Screens (<= 480px) */
-@media (max-width: 480px) {
-  .logo-title {
-    font-size: 1.05rem;
-  }
-
-  .logo-subtitle {
-    font-size: 0.72rem;
-  }
-
-  .checklist-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .game-title-text {
-    font-size: 1.05rem;
-  }
-
-  .status-radio-grid {
-    grid-template-columns: 1fr;
-    gap: 0.4rem;
-  }
-
-  .status-radio-label {
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-  }
-
-  .multi-game-badge {
-    font-size: 0.65rem;
-  }
-
-  .modal-footer {
-    padding: 0.75rem 1rem;
-  }
-
-  .modal-footer .btn {
-    flex: 1;
-  }
-}
-
-/* Sticky App Footer: Total Seluruh Pendapatan IDR */
+/* ==========================================================================
+   APP FOOTER (STICKY DESKTOP, CLEAN MOBILE)
+   ========================================================================== */
 .app-footer {
   margin-top: 3.5rem;
   background: rgba(15, 23, 42, 0.94);
   backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-top: 1px solid var(--border-card);
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.45);
   padding: 1.25rem 0 1.5rem;
@@ -1378,17 +1383,18 @@ html, body {
 
 .footer-total-amount {
   font-family: var(--font-mono);
-  font-size: 1.85rem;
+  font-size: clamp(1.4rem, 3.5vw, 1.85rem);
   font-weight: 800;
   color: #4ade80;
   line-height: 1.1;
   text-shadow: 0 0 24px rgba(74, 222, 128, 0.35);
+  word-break: break-word;
 }
 
 .footer-games-chips {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   flex-wrap: wrap;
 }
 
@@ -1431,6 +1437,7 @@ html, body {
   border-radius: var(--radius-md);
   font-size: 0.82rem;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .formula-label {
@@ -1444,7 +1451,8 @@ html, body {
   font-family: var(--font-mono);
   color: #e2e8f0;
   word-break: break-word;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
 }
 
 .footer-formula-total {
@@ -1453,25 +1461,8 @@ html, body {
   margin-left: 0.25rem;
 }
 
-@media (max-width: 768px) {
-  .app-footer {
-    padding: 1rem 0;
-    position: relative;
-  }
-
-  .footer-main-row {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-
-  .footer-total-amount {
-    font-size: 1.5rem;
-  }
-}
-
 /* ==========================================================================
-   AUTHENTICATION MODAL THEME (Login & Register)
+   AUTHENTICATION MODAL THEME
    ========================================================================== */
 .auth-modal-card {
   max-width: 460px;
@@ -1494,7 +1485,7 @@ html, body {
 }
 
 .auth-header-wrapper {
-  padding: 1.35rem 1.4rem 1.15rem;
+  padding: 1.25rem 1.35rem;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -1597,4 +1588,373 @@ html, body {
   font-size: 0.76rem;
   line-height: 1.45;
   color: #c7d2fe;
+}
+
+/* ==========================================================================
+   RESPONSIVE BREAKPOINTS (MOBILE & DESKTOP)
+   ========================================================================== */
+
+/* Laptop & Tablet Landscape (<= 1024px) */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .game-card-header {
+    gap: 0.65rem;
+  }
+
+  .checklist-grid {
+    gap: 0.45rem;
+  }
+
+  .logo-subtitle {
+    max-width: 320px;
+  }
+}
+
+/* Tablet Portrait & Large Phone (<= 768px) */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0.75rem 0;
+  }
+
+  .header-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .logo-area {
+    justify-content: flex-start;
+  }
+
+  .logo-subtitle {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .header-right-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .header-status-row {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .header-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    gap: 0.45rem;
+  }
+
+  .header-buttons .btn {
+    width: 100%;
+    padding: 0.55rem 0.6rem;
+    font-size: 0.8rem;
+    min-height: 38px;
+    justify-content: center;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    margin: 1rem 0;
+  }
+
+  .search-wrapper {
+    width: 100%;
+  }
+
+  .status-pills-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    gap: 0.35rem;
+  }
+
+  .status-pill {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.78rem;
+    padding: 0.45rem 0.5rem;
+    min-height: 36px;
+  }
+
+  .checklist-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+  }
+
+  .checklist-quick-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.4rem;
+  }
+
+  .game-check-pill {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.78rem;
+  }
+
+  .game-main-card {
+    padding: 1rem;
+    gap: 0.85rem;
+  }
+
+  .game-card-header {
+    gap: 0.75rem;
+  }
+
+  .game-header-top-row {
+    align-items: center;
+  }
+
+  .game-header-bottom-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .game-meta-row {
+    width: 100%;
+  }
+
+  .game-card-actions {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+    gap: 0.5rem;
+  }
+
+  .game-total-currency-badge {
+    width: 100%;
+    justify-content: center;
+    min-height: 34px;
+  }
+
+  .game-buttons-group {
+    display: flex;
+    width: 100%;
+    gap: 0.4rem;
+  }
+
+  .game-buttons-group .btn-connect-game {
+    flex: 1 1 auto;
+    min-height: 36px;
+    justify-content: center;
+  }
+
+  .game-buttons-group .btn-icon-square {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .email-item-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .email-info-cell {
+    width: 100%;
+  }
+
+  .email-actions-cell {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .email-status-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+  }
+
+  .email-status-group .status-dropdown {
+    flex: 1 1 120px;
+    min-height: 36px;
+    font-size: 0.8rem;
+  }
+
+  .email-status-group .email-currency-badge {
+    min-height: 36px;
+  }
+
+  .email-buttons-group {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-left: auto;
+  }
+
+  .email-buttons-group .btn-icon-square {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .app-footer {
+    padding: 1.15rem 0;
+    position: relative;
+    margin-top: 2.5rem;
+  }
+
+  .footer-main-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .modal-box {
+    width: calc(100% - 1rem);
+    max-height: 94vh;
+    margin: 0 auto;
+  }
+
+  .modal-body {
+    padding: 1rem;
+    max-height: calc(94vh - 120px);
+  }
+}
+
+/* Standard & Small Mobile Screens (<= 540px) */
+@media (max-width: 540px) {
+  .container {
+    padding: 0 0.85rem;
+  }
+
+  .logo-title {
+    font-size: 1.12rem;
+  }
+
+  .logo-icon {
+    font-size: 1.45rem;
+  }
+
+  .header-status-row {
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .user-pill-email {
+    max-width: 130px;
+  }
+
+  .email-input-action-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.45rem;
+  }
+
+  .email-input-btn-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    gap: 0.4rem;
+  }
+
+  .email-input-btn-group .btn {
+    width: 100%;
+    min-height: 36px;
+  }
+
+  .status-radio-grid {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .status-radio-label {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.55rem 0.8rem;
+    min-height: 42px;
+  }
+
+  .modal-footer {
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .modal-footer .btn {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-height: 40px;
+  }
+
+  .footer-formula-bar {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.78rem;
+  }
+}
+
+/* Extra Small Smartphone Screens (<= 380px) */
+@media (max-width: 380px) {
+  .container {
+    padding: 0 0.65rem;
+  }
+
+  .header-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .status-pills-group {
+    grid-template-columns: 1fr;
+  }
+
+  .checklist-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-title-text {
+    font-size: 1.05rem;
+  }
+
+  .email-status-group {
+    width: 100%;
+  }
+
+  .email-status-group .status-dropdown {
+    width: 100%;
+  }
+
+  .email-status-group .email-currency-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .email-buttons-group {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .footer-total-amount {
+    font-size: 1.35rem;
+  }
 }

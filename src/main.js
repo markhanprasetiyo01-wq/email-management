@@ -223,43 +223,48 @@ function renderApp() {
       <div class="container header-inner">
         <div class="logo-area">
           <span class="logo-icon">🎮</span>
-          <div>
+          <div class="logo-text-group">
             <div class="logo-title">Game & Email Hub</div>
             <div class="logo-subtitle">Pilih game untuk melihat email mana saja yang terhubung dan statusnya</div>
           </div>
         </div>
 
-        <div class="header-buttons">
-          <div class="storage-badge" title="${badgeTitle}">
-            <span class="badge-dot"></span>
-            <span>${badgeLabel}</span>
-          </div>
-          ${
-            authService.isLoggedIn()
-              ? `
-            <div style="display:inline-flex; align-items:center; gap:0.4rem; background:rgba(99,102,241,0.12); padding:0.25rem 0.65rem; border-radius:var(--radius-pill); border:1px solid rgba(99,102,241,0.3); font-size:0.78rem;">
-              <span style="color:#a5b4fc; font-weight:600;">👤 ${authService.getUser()?.email || "User"}</span>
-              <button type="button" id="btn-logout" style="background:none; border:none; color:#f87171; cursor:pointer; font-size:0.75rem; font-weight:600; padding:0 0.2rem;" title="Keluar / Logout">🚪 Logout</button>
+        <div class="header-right-panel">
+          <div class="header-status-row">
+            <div class="storage-badge" title="${badgeTitle}">
+              <span class="badge-dot"></span>
+              <span>${badgeLabel}</span>
             </div>
-          `
-              : `
-            <button class="btn btn-secondary btn-sm" id="btn-open-login" style="border-color:#818cf8; color:#a5b4fc;">
-              <span>🔑 Masuk / Daftar</span>
+            ${
+              authService.isLoggedIn()
+                ? `
+              <div class="user-pill">
+                <span class="user-pill-email" title="${authService.getUser()?.email || "User"}">👤 ${authService.getUser()?.email || "User"}</span>
+                <button type="button" id="btn-logout" class="user-pill-logout" title="Keluar / Logout">🚪 Logout</button>
+              </div>
+            `
+                : `
+              <button class="btn btn-secondary btn-sm" id="btn-open-login" style="border-color:#818cf8; color:#a5b4fc;">
+                <span>🔑 Masuk / Daftar</span>
+              </button>
+            `
+            }
+          </div>
+
+          <div class="header-buttons">
+            <button class="btn btn-secondary btn-sm" id="btn-backup-data" title="Cadangan Data">
+              <span>💾 Backup</span>
             </button>
-          `
-          }
-          <button class="btn btn-secondary btn-sm" id="btn-backup-data" title="Cadangan Data">
-            <span>💾 Backup</span>
-          </button>
-          <button class="btn btn-secondary btn-sm" id="btn-bulk-email" style="border-color:rgba(99,102,241,0.4); background:rgba(99,102,241,0.1); color:#a5b4fc;" title="Paste banyak email sekaligus">
-            <span>📥 + Bulk Email</span>
-          </button>
-          <button class="btn btn-secondary btn-sm" id="btn-add-game">
-            <span>🎮 + Tambah Game</span>
-          </button>
-          <button class="btn btn-primary btn-sm" id="btn-connect-email">
-            <span>✉️ + Hubungkan Email</span>
-          </button>
+            <button class="btn btn-secondary btn-sm btn-bulk-email" id="btn-bulk-email" title="Paste banyak email sekaligus">
+              <span>📥 + Bulk Email</span>
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-add-game">
+              <span>🎮 + Tambah Game</span>
+            </button>
+            <button class="btn btn-primary btn-sm btn-connect-primary" id="btn-connect-email">
+              <span>✉️ + Hubungkan Email</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>
@@ -297,11 +302,16 @@ function renderApp() {
       <!-- Bagian Checklist Filter Game (Centang / Hapus Centang) -->
       <div class="game-checklist-section">
         <div class="checklist-header">
-          <div class="checklist-title">
-            <span>🎮 Daftar Game (Centang untuk Menampilkan):</span>
-            <span style="font-size:0.75rem; color:var(--text-muted); font-weight:normal;">
+          <div class="checklist-title-group">
+            <span class="checklist-title">🎮 Daftar Game (Centang untuk Menampilkan):</span>
+            <span class="checklist-count-badge">
               (${currentSelectedGameIds.size} dari ${games.length} game dicentang)
             </span>
+          </div>
+          <div class="checklist-quick-actions">
+            <button type="button" class="btn-text-link" id="btn-select-all-games">✓ Pilih Semua</button>
+            <span class="checklist-action-divider">•</span>
+            <button type="button" class="btn-text-link" id="btn-deselect-all-games">✕ Hapus Centang</button>
           </div>
         </div>
 
@@ -315,7 +325,7 @@ function renderApp() {
               return `
               <label class="game-check-pill ${isChecked ? "checked" : ""}">
                 <input type="checkbox" data-game-check-id="${game.id}" ${isChecked ? "checked" : ""}>
-                <span>🎮 ${game.title}</span>
+                <span class="game-check-title">🎮 ${game.title}</span>
                 <span class="game-check-badge">${gameEmailCount} email</span>
               </label>
             `;
@@ -418,7 +428,7 @@ function renderApp() {
             <div class="game-main-card ${isCollapsed ? "collapsed" : ""}" data-game-id="${game.id}" style="border-left: 4px solid ${game.color || "#6366f1"};">
               <!-- Header Kartu Game -->
               <div class="game-card-header">
-                <!-- Baris 1: Judul Game & Identitas -->
+                <!-- Baris 1: Judul Game & Identitas + Tombol Collapse -->
                 <div class="game-header-top-row">
                   <div class="game-title-group" data-action="toggle-collapse-game" data-game-id="${game.id}" title="Klik untuk ${isCollapsed ? "membuka" : "menciutkan"} list email">
                     <div class="game-icon-avatar" style="background:${game.color || "#6366f1"}22; border:1px solid ${game.color || "#6366f1"}44;">
@@ -429,6 +439,10 @@ function renderApp() {
                       <span class="game-count-badge">${gameRegs.length} Email Terhubung</span>
                     </div>
                   </div>
+
+                  <button class="btn btn-secondary btn-icon-square btn-collapse-toggle" data-action="toggle-collapse-game" data-game-id="${game.id}" title="${isCollapsed ? "Buka list email game ini" : "Sembunyikan / ciutkan list email game ini"}">
+                    ${isCollapsed ? SVG_ICONS.chevronDown : SVG_ICONS.chevronUp}
+                  </button>
                 </div>
 
                 <!-- Baris 2: Sejajar - Badge Detail Game (Kiri) & Badge Aksi/Edit (Kanan) -->
@@ -437,15 +451,15 @@ function renderApp() {
                   <div class="game-meta-row">
                     ${
                       game.economyType === "nft" || game.contractAddress
-                        ? `<span class="game-meta-tag" style="background:rgba(99,102,241,0.2); color:#a5b4fc; border:1px solid rgba(99,102,241,0.4);" title="Game Web3 / NFT">⚡ Web3 / NFT</span>`
-                        : `<span class="game-meta-tag" style="background:rgba(16,185,129,0.15); color:#6ee7b7; border:1px solid rgba(16,185,129,0.3);" title="Game Web2 / RMT">🎮 Web2 / RMT</span>`
+                        ? `<span class="game-meta-tag tag-web3" title="Game Web3 / NFT">⚡ Web3 / NFT</span>`
+                        : `<span class="game-meta-tag tag-web2" title="Game Web2 / RMT">🎮 Web2 / RMT</span>`
                     }
-                    ${game.platform ? `<span class="game-meta-tag">💻 ${game.platform}</span>` : ""}
+                    ${game.platform ? `<span class="game-meta-tag tag-platform">💻 ${game.platform}</span>` : ""}
                     ${
                       (game.economyType === "nft" || game.contractAddress) && game.contractAddress
                         ? `
-                      <span class="game-meta-tag" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); font-family:var(--font-mono); font-size:0.72rem;" title="Smart Contract Address: ${game.contractAddress}">
-                        🔗 CA: ${game.contractAddress.slice(0, 6)}...${game.contractAddress.slice(-4)}
+                      <span class="game-meta-tag tag-ca" title="Smart Contract Address: ${game.contractAddress}">
+                        <span class="ca-text">🔗 CA: ${game.contractAddress.slice(0, 6)}...${game.contractAddress.slice(-4)}</span>
                         <button type="button" class="btn-copy-ca" data-ca="${game.contractAddress}" style="background:none; border:none; color:#93c5fd; cursor:pointer; padding:0 0.2rem;" title="Salin Contract Address">📋</button>
                       </span>
                     `
@@ -455,7 +469,7 @@ function renderApp() {
                       rateIdr > 0
                         ? `
                       <span class="game-meta-tag rate-pill" title="Rate Konversi: Rp ${rateIdr.toLocaleString("id-ID")} per ${rateUnit.toLocaleString("id-ID")} ${game.currencyIcon || "🪙"}">
-                        ${game.economyType === "nft" ? "⚡ Live Rate:" : "💱 Rate:"} Rp ${rateIdr.toLocaleString("id-ID")} / ${rateUnit.toLocaleString("id-ID")} ${game.currencyIcon || "🪙"}
+                        <span class="rate-text">${game.economyType === "nft" ? "⚡ Live Rate:" : "💱 Rate:"} Rp ${rateIdr.toLocaleString("id-ID")} / ${rateUnit.toLocaleString("id-ID")} ${game.currencyIcon || "🪙"}</span>
                         ${
                           (game.economyType === "nft" || game.contractAddress) && game.contractAddress
                             ? `<button type="button" class="btn-refresh-crypto" data-game-id="${game.id}" data-ca="${game.contractAddress}" style="background:none; border:none; color:#fef08a; cursor:pointer; font-size:0.75rem; padding:0 0.2rem;" title="Perbarui harga token real-time">🔄</button>`
@@ -478,9 +492,6 @@ function renderApp() {
 
                   <!-- Sebelah Kanan: Badge Edit, Mata Uang, & Aksi Lainnya -->
                   <div class="game-card-actions">
-                    <button class="btn btn-secondary btn-icon-square btn-collapse-toggle" data-action="toggle-collapse-game" data-game-id="${game.id}" title="${isCollapsed ? "Buka list email game ini" : "Sembunyikan / ciutkan list email game ini"}">
-                      ${isCollapsed ? SVG_ICONS.chevronDown : SVG_ICONS.chevronUp}
-                    </button>
                     <div class="game-total-currency-badge" title="Total saldo LIVE: ${totalLiveCurrency.toLocaleString("id-ID")}${rateIdr > 0 ? ` (Estimasi IDR: Rp ${Math.round(estimatedTotalIdr).toLocaleString("id-ID")})` : ""}">
                       <span class="currency-symbol">${game.currencyIcon || "🪙"}</span>
                       <span class="currency-total-amount">${totalLiveCurrency.toLocaleString("id-ID")}</span>
@@ -494,16 +505,18 @@ function renderApp() {
                           : ""
                       }
                     </div>
-                    <button class="btn btn-primary btn-connect-game" data-action="connect-email-to-this-game" data-game-id="${game.id}">
-                      ${SVG_ICONS.plus}
-                      <span>Hubungkan Email</span>
-                    </button>
-                    <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-game" data-id="${game.id}" title="Edit Detail Game">
-                      ${SVG_ICONS.edit}
-                    </button>
-                    <button class="btn btn-secondary btn-icon-square btn-action-delete" data-action="delete-game" data-id="${game.id}" title="Hapus Game">
-                      ${SVG_ICONS.trash}
-                    </button>
+                    <div class="game-buttons-group">
+                      <button class="btn btn-primary btn-connect-game" data-action="connect-email-to-this-game" data-game-id="${game.id}">
+                        ${SVG_ICONS.plus}
+                        <span>Hubungkan Email</span>
+                      </button>
+                      <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-game" data-id="${game.id}" title="Edit Detail Game">
+                        ${SVG_ICONS.edit}
+                      </button>
+                      <button class="btn btn-secondary btn-icon-square btn-action-delete" data-action="delete-game" data-id="${game.id}" title="Hapus Game">
+                        ${SVG_ICONS.trash}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -547,7 +560,7 @@ function renderApp() {
                         <div class="email-info-cell">
                           <div class="email-address-text">
                             <span>✉️</span>
-                            <span>${reg.email.address}</span>
+                            <span class="email-addr-text">${reg.email.address}</span>
                             <span class="multi-game-badge" title="Email ini juga terdaftar di game: ${otherGameNames}">
                               🔗 Terhubung di ${totalGamesForThisEmail.length} game
                             </span>
@@ -559,38 +572,42 @@ function renderApp() {
                         </div>
 
                         <div class="email-actions-cell">
-                          ${
-                            reg.status === "live"
-                              ? `
-                            <div class="email-currency-badge" data-action="edit-reg" data-reg-id="${reg.id}" title="Mata uang in-game akun ini: ${(Number(reg.currency) || 0).toLocaleString("id-ID")}${rateIdr > 0 ? ` (Estimasi IDR: Rp ${Math.round(((Number(reg.currency) || 0) / rateUnit) * rateIdr).toLocaleString("id-ID")})` : ""} - Klik untuk edit">
-                              <span>${game.currencyIcon || "🪙"}</span>
-                              <span>${(Number(reg.currency) || 0).toLocaleString("id-ID")}</span>
-                              ${
-                                rateIdr > 0 && Number(reg.currency) > 0
-                                  ? `<span style="font-size:0.72rem; color:#6ee7b7; font-weight:600; opacity:0.95; margin-left:0.2rem;">(≈ Rp ${Math.round(((Number(reg.currency) || 0) / rateUnit) * rateIdr).toLocaleString("id-ID")})</span>`
-                                  : ""
-                              }
-                            </div>
-                          `
-                              : ""
-                          }
+                          <div class="email-status-group">
+                            ${
+                              reg.status === "live"
+                                ? `
+                              <div class="email-currency-badge" data-action="edit-reg" data-reg-id="${reg.id}" title="Mata uang in-game akun ini: ${(Number(reg.currency) || 0).toLocaleString("id-ID")}${rateIdr > 0 ? ` (Estimasi IDR: Rp ${Math.round(((Number(reg.currency) || 0) / rateUnit) * rateIdr).toLocaleString("id-ID")})` : ""} - Klik untuk edit">
+                                <span>${game.currencyIcon || "🪙"}</span>
+                                <span>${(Number(reg.currency) || 0).toLocaleString("id-ID")}</span>
+                                ${
+                                  rateIdr > 0 && Number(reg.currency) > 0
+                                    ? `<span style="font-size:0.72rem; color:#6ee7b7; font-weight:600; opacity:0.95; margin-left:0.2rem;">(≈ Rp ${Math.round(((Number(reg.currency) || 0) / rateUnit) * rateIdr).toLocaleString("id-ID")})</span>`
+                                    : ""
+                                }
+                              </div>
+                            `
+                                : ""
+                            }
 
-                          <!-- Dropdown Status Cepat (Bisa langsung diubah tanpa buka modal) -->
-                          <select class="status-dropdown ${reg.status}" data-action="change-status" data-reg-id="${reg.id}">
-                            <option value="live" ${reg.status === "live" ? "selected" : ""}>🟢 Live (Rilis)</option>
-                            <option value="praregist" ${reg.status === "praregist" ? "selected" : ""}>🟡 Praregist</option>
-                            <option value="maintenance" ${reg.status === "maintenance" ? "selected" : ""}>🔴 Maintenance</option>
-                          </select>
+                            <!-- Dropdown Status Cepat (Bisa langsung diubah tanpa buka modal) -->
+                            <select class="status-dropdown ${reg.status}" data-action="change-status" data-reg-id="${reg.id}">
+                              <option value="live" ${reg.status === "live" ? "selected" : ""}>🟢 Live (Rilis)</option>
+                              <option value="praregist" ${reg.status === "praregist" ? "selected" : ""}>🟡 Praregist</option>
+                              <option value="maintenance" ${reg.status === "maintenance" ? "selected" : ""}>🔴 Maintenance</option>
+                            </select>
+                          </div>
 
-                          <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-email-details" data-email-id="${reg.email.id}" title="Edit Alamat & Data Email Ini">
-                            ✉️
-                          </button>
-                          <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-reg" data-reg-id="${reg.id}" title="Edit Catatan Akun & Saldo Game">
-                            ${SVG_ICONS.edit}
-                          </button>
-                          <button class="btn btn-secondary btn-icon-square btn-action-delete" data-action="delete-reg" data-reg-id="${reg.id}" title="Hapus Email dari Game Ini">
-                            ${SVG_ICONS.trash}
-                          </button>
+                          <div class="email-buttons-group">
+                            <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-email-details" data-email-id="${reg.email.id}" title="Edit Alamat & Data Email Ini">
+                              ✉️
+                            </button>
+                            <button class="btn btn-secondary btn-icon-square btn-action-edit" data-action="edit-reg" data-reg-id="${reg.id}" title="Edit Catatan Akun & Saldo Game">
+                              ${SVG_ICONS.edit}
+                            </button>
+                            <button class="btn btn-secondary btn-icon-square btn-action-delete" data-action="delete-reg" data-reg-id="${reg.id}" title="Hapus Email dari Game Ini">
+                              ${SVG_ICONS.trash}
+                            </button>
+                          </div>
                         </div>
                       </div>
                     `;
@@ -702,13 +719,29 @@ function renderApp() {
     };
   });
 
-  // 3. Tombol Centang Semua Game saat kondisi empty state
+  // 3. Tombol Centang Semua Game saat kondisi empty state atau tombol cepat
   document
     .getElementById("btn-empty-select-all")
     ?.addEventListener("click", () => {
       selectedGameIds = new Set(games.map((g) => g.id));
       renderApp();
       showToast("Semua game dicentang");
+    });
+
+  document
+    .getElementById("btn-select-all-games")
+    ?.addEventListener("click", () => {
+      selectedGameIds = new Set(games.map((g) => g.id));
+      renderApp();
+      showToast("Semua game dicentang");
+    });
+
+  document
+    .getElementById("btn-deselect-all-games")
+    ?.addEventListener("click", () => {
+      selectedGameIds = new Set();
+      renderApp();
+      showToast("Semua centang game dihapus");
     });
 
   // 4. Tombol Filter Status (Pill buttons: Semua, Live, Praregist, Maintenance)

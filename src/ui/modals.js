@@ -684,7 +684,7 @@ export function openConnectEmailToGameModal(targetGameId = null) {
           <select class="form-select" id="form-existing-email-select" size="6" style="height:140px; font-family:var(--font-mono); font-size:0.82rem;" required>
           </select>
 
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+          <div class="email-input-action-row">
             <input 
               type="email" 
               class="form-input" 
@@ -695,12 +695,14 @@ export function openConnectEmailToGameModal(targetGameId = null) {
               readonly
               style="background:var(--bg-subtle); color:#93c5fd; font-weight:600;"
             >
-            <button type="button" class="btn btn-secondary btn-sm" id="btn-toggle-custom-email" style="flex-shrink:0;">
-              ✍️ Ketik Manual
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" id="btn-trigger-bulk-modal" style="flex-shrink:0; background:rgba(99,102,241,0.15); color:#a5b4fc; border-color:rgba(99,102,241,0.4);" title="Paste puluhan email sekaligus">
-              📥 Bulk Paste
-            </button>
+            <div class="email-input-btn-group">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-toggle-custom-email">
+                ✍️ Ketik Manual
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-trigger-bulk-modal" style="background:rgba(99,102,241,0.15); color:#a5b4fc; border-color:rgba(99,102,241,0.4);" title="Paste puluhan email sekaligus">
+                📥 Bulk Paste
+              </button>
+            </div>
           </div>
         </div>
       </div>
