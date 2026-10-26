@@ -401,27 +401,35 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.6rem 1rem;
-  margin: 0.75rem 0;
+  gap: 0.35rem 0.75rem;
+  margin: 0.35rem 0;
   flex-wrap: wrap;
 }
 
 .search-wrapper {
-  flex: 1 1 260px;
+  flex: 1 1 240px;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  height: 34px;
+  margin: 0;
+  padding: 0;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.48rem 0.85rem;
+  height: 34px;
+  min-height: 34px;
+  padding: 0 0.85rem;
+  line-height: 34px;
   background: var(--bg-card);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   color: var(--text-primary);
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  min-height: 38px;
+  box-sizing: border-box;
 }
 
 .search-input:focus {
@@ -436,31 +444,32 @@ textarea {
 .status-pills-group {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.25rem;
   background: var(--bg-card);
-  padding: 0.25rem;
+  padding: 0.2rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-card);
   flex-wrap: wrap;
+  min-height: 34px;
 }
 
 .status-pill {
   border: none;
   background: transparent;
   color: var(--text-secondary);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  padding: 0.35rem 0.65rem;
+  padding: 0.25rem 0.6rem;
   border-radius: var(--radius-sm);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
+  gap: 0.3rem;
   transition: all 0.15s ease;
   white-space: nowrap;
   user-select: none;
-  min-height: 32px;
+  min-height: 28px;
 }
 
 .status-pill:hover {
@@ -1677,27 +1686,31 @@ textarea {
   .filter-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.4rem;
-    margin: 0.45rem 0 0.6rem 0;
+    gap: 0.25rem;
+    margin: 0.25rem 0;
   }
 
   .search-wrapper {
     width: 100%;
+    height: 34px;
+    margin: 0;
+    padding: 0;
   }
 
   .status-pills-group {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     width: 100%;
-    gap: 0.35rem;
+    gap: 0.25rem;
+    padding: 0.2rem;
   }
 
   .status-pill {
     width: 100%;
     justify-content: center;
-    font-size: 0.78rem;
-    padding: 0.35rem 0.5rem;
-    min-height: 32px;
+    font-size: 0.76rem;
+    padding: 0.25rem 0.4rem;
+    min-height: 28px;
   }
 
   .checklist-header {
