@@ -30,17 +30,17 @@ function getToastContainer() {
   return toastContainer;
 }
 
+// Ikon SVG tajam untuk notifikasi toast (SaaS modern standard)
+const TOAST_ICONS = {
+  success: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  error: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  info: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+};
+
 /**
  * showToast(message, type)
  * ------------------------
  * Menampilkan pesan toast baru di layar pengguna.
- *
- * ALUR KERJA:
- * 1. Ambil kontainer toast.
- * 2. Buat elemen div untuk toast baru dengan ikon sesuai tipe ('success', 'error', 'info').
- * 3. Tambahkan ke DOM dan biarkan terlihat selama 3.2 detik.
- * 4. Berikan efek fade-out dan slide ke bawah (animasi transisi 0.3 detik).
- * 5. Hapus elemen secara bersih dari DOM (garbage collection) agar tidak memberatkan memori.
  *
  * @param {string} message - Pesan yang ingin ditampilkan ke pengguna
  * @param {"success" | "error" | "info"} type - Tipe notifikasi (default: "success")
@@ -53,26 +53,22 @@ export function showToast(message, type = "success") {
   const toast = document.createElement("div");
   toast.className = `toast toast-${type}`;
 
-  // Tentukan ikon berdasarkan tipe
-  const iconName = type === "success" ? "✓" : type === "error" ? "✕" : "ℹ";
+  const iconSvg = TOAST_ICONS[type] || TOAST_ICONS.success;
 
-  // Masukkan konten HTML (ikon + pesan teks)
+  // Masukkan konten HTML rapi: Ikon bulat + teks pesan
   toast.innerHTML = `
-    <span style="font-weight:bold; font-size:1.1rem;">${iconName}</span>
-    <span>${message}</span>
+    <span class="toast-icon-box toast-icon-${type}">${iconSvg}</span>
+    <span class="toast-message">${message}</span>
   `;
 
-  // 3. Tempelkan toast ke dalam kontainer agar muncul di layar
+  // 3. Tempelkan toast ke dalam kontainer
   container.appendChild(toast);
 
-  // 4. Atur timer untuk animasi keluar dan penghapusan
+  // 4. Timer animasi keluar dan penghapusan otomatis
   setTimeout(() => {
-    // Efek visual: kurangi transparansi jadi 0 dan geser ke bawah
-    toast.style.opacity = "0";
-    toast.style.transform = "translateY(10px)";
-    toast.style.transition = "all 0.3s ease";
-
-    // 5. Setelah animasi transisi 300ms selesai, hapus elemen dari dokumen
-    setTimeout(() => toast.remove(), 200);
-  }, 3200);
+    toast.classList.add("toast-leaving");
+    setTimeout(() => {
+      toast.remove();
+    }, 250);
+  }, 2600);
 }

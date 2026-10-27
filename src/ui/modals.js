@@ -29,6 +29,7 @@ const MODAL_ICONS = {
   key: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L16 7l-1.5-1.5-1.5 1.5 1.5 1.5-1.5 1.5-1.5-1.5-3.5 3.5a6.5 6.5 0 1 0 3 3l3.5-3.5Z"/></svg>`,
   save: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
   user: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  alert: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
 };
 
 // Penampung elemen DOM modal overlay (Singleton)
@@ -95,6 +96,8 @@ function getModalElements() {
 export function closeModal() {
   if (modalOverlay) {
     modalOverlay.classList.remove("active");
+    const box = modalOverlay.querySelector(".modal-box");
+    if (box) box.classList.remove("modal-box-confirm");
   }
 }
 
@@ -115,8 +118,18 @@ export function openConfirmModal(
   confirmBtnClass = "btn-danger",
 ) {
   const { overlay, title: titleEl, body, footer } = getModalElements();
+  const box = overlay.querySelector(".modal-box");
+  if (box) box.classList.add("modal-box-confirm");
+
   titleEl.textContent = title;
-  body.innerHTML = `<p style="font-size:0.9rem; color:var(--text-secondary); line-height:1.5;">${message}</p>`;
+  body.innerHTML = `
+    <div class="confirm-modal-content">
+      <div class="confirm-modal-icon-badge ${confirmBtnClass.includes("danger") ? "badge-danger" : "badge-warning"}">
+        ${MODAL_ICONS.alert}
+      </div>
+      <p class="confirm-modal-text">${message}</p>
+    </div>
+  `;
 
   footer.innerHTML = `
     <button class="btn btn-secondary btn-sm" id="btn-cancel-modal">Batal</button>

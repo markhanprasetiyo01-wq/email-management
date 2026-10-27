@@ -1551,6 +1551,65 @@ textarea {
   }
 }
 
+/* Modal Konfirmasi Ringkas & Rapi */
+.modal-box.modal-box-confirm {
+  max-width: 420px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.65);
+}
+
+.modal-box.modal-box-confirm .modal-header {
+  padding: 0.85rem 1.15rem;
+}
+
+.modal-box.modal-box-confirm .modal-title {
+  font-size: 1.05rem;
+}
+
+.modal-box.modal-box-confirm .modal-body {
+  padding: 1.15rem 1.25rem;
+}
+
+.confirm-modal-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.confirm-modal-icon-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.confirm-modal-icon-badge.badge-danger {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.confirm-modal-icon-badge.badge-warning {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.confirm-modal-text {
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.modal-box.modal-box-confirm .modal-footer {
+  padding: 0.75rem 1.15rem;
+  gap: 0.5rem;
+}
+
 .modal-header {
   padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--border-card);
@@ -1698,37 +1757,108 @@ textarea {
   border-color: var(--status-maint-border);
 }
 
-/* Toast Notifications */
+/* Toast Notifications (Modern, Centered, Compact Floating Pill) */
 .toast-container {
   position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 120;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
   pointer-events: none;
-  max-width: calc(100% - 3rem);
+  width: auto;
+  max-width: min(92vw, 420px);
 }
 
 .toast {
   pointer-events: auto;
-  background: var(--bg-card);
-  border: 1px solid var(--border-card);
-  padding: 0.65rem 1rem;
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
-  color: #fff;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.42rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #f8fafc;
+  box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  animation: toastPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+  user-select: none;
+}
+
+@keyframes toastPopIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.toast.toast-leaving {
+  opacity: 0 !important;
+  transform: translateY(-8px) scale(0.95) !important;
+}
+
+.toast-icon-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-icon-box.toast-icon-success {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.toast-icon-box.toast-icon-error {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.toast-icon-box.toast-icon-info {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+}
+
+.toast-message {
+  line-height: 1.35;
   word-break: break-word;
+  color: #f1f5f9;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .toast.toast-success {
-  border-color: var(--status-live-border);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .toast.toast-error {
-  border-color: var(--status-maint-border);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.toast.toast-info {
+  border-color: rgba(99, 102, 241, 0.35);
 }
 
 /* Empty State */
@@ -2389,9 +2519,26 @@ textarea {
     margin: 0 auto;
   }
 
+  .modal-box.modal-box-confirm {
+    width: calc(100% - 1.5rem);
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
   .modal-body {
     padding: 1rem;
     max-height: calc(94vh - 120px);
+  }
+
+  .toast-container {
+    top: 1rem;
+    max-width: calc(100% - 1.5rem);
+    width: auto;
+  }
+
+  .toast {
+    padding: 0.38rem 0.8rem;
+    font-size: 0.78rem;
   }
 }
 
