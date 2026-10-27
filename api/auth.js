@@ -80,6 +80,32 @@ function isWhitelistedIp(ip) {
   return envList.includes(cleanIp);
 }
 
+// Helper untuk memeriksa apakah user saat ini adalah Developer / Admin
+function isDevOrAdmin(clientIp, userEmail) {
+  // A. IP Pengembang / Pemilik terdaftar di Whitelist
+  if (isWhitelistedIp(clientIp)) return true;
+
+  // B. Email terdaftar di ADMIN_EMAILS / ADMIN_EMAIL pada Environment Variable
+  const cleanEmail = (userEmail || "").toLowerCase().trim();
+  const envAdminEmails = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || "")
+    .toLowerCase()
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (cleanEmail && envAdminEmails.includes(cleanEmail)) {
+    return true;
+  }
+
+  // C. Fallback email default pengembang
+  const defaultAdmins = ["markhanprasetiyo@gmail.com"];
+  if (cleanEmail && defaultAdmins.includes(cleanEmail)) {
+    return true;
+  }
+
+  return false;
+}
+
 async function sendVerificationEmail(toEmail, verifyUrl, verifyCode) {
   const resendApiKey = process.env.RESEND_API_KEY;
   const emailFrom =
@@ -429,6 +455,7 @@ export default async function handler(req, res) {
       // Simpan User Permanen & Kunci IP (hanya kunci jika bukan whitelisted)
       await kvCommand(["SET", `user:${userId}`, JSON.stringify(userRecord)]);
       await kvCommand(["SET", `user_email:${verifiedEmail}`, userId]);
+      await kvCommand(["SADD", "all_users", userId]);
       if (!isWhitelistedIp(clientIp)) {
         await kvCommand(["SET", ipKey, userId]); // 1 IP terkunci untuk publik
       }
@@ -446,12 +473,14 @@ export default async function handler(req, res) {
       const sessionToken = crypto.randomBytes(32).toString("hex");
       await kvCommand(["SET", `session:${sessionToken}`, userId]);
 
+      const isAdmin = isDevOrAdmin(clientIp, verifiedEmail);
+
       return res.status(200).json({
         success: true,
         message:
           "Email berhasil diverifikasi! Akun aktif dan ruang kerja kosong Anda telah siap.",
         token: sessionToken,
-        user: { id: userId, email: verifiedEmail },
+        user: { id: userId, email: verifiedEmail, isAdmin },
       });
     } catch (err) {
       return res
@@ -509,11 +538,14 @@ export default async function handler(req, res) {
       const sessionToken = crypto.randomBytes(32).toString("hex");
       await kvCommand(["SET", `session:${sessionToken}`, userId]);
 
+      const clientIp = getClientIp(req);
+      const isAdmin = isDevOrAdmin(clientIp, userRecord.email);
+
       return res.status(200).json({
         success: true,
         message: "Login berhasil!",
         token: sessionToken,
-        user: { id: userId, email: userRecord.email },
+        user: { id: userId, email: userRecord.email, isAdmin },
       });
     } catch (err) {
       return res.status(500).json({ error: err.message || "Gagal login" });
@@ -546,9 +578,12 @@ export default async function handler(req, res) {
 
       const userRecord =
         typeof rawUser === "string" ? JSON.parse(rawUser) : rawUser;
+      const clientIp = getClientIp(req);
+      const isAdmin = isDevOrAdmin(clientIp, userRecord.email);
+
       return res.status(200).json({
         success: true,
-        user: { id: userId, email: userRecord.email },
+        user: { id: userId, email: userRecord.email, isAdmin },
       });
     } catch (err) {
       return res.status(500).json({ error: err.message });
@@ -556,7 +591,116 @@ export default async function handler(req, res) {
   }
 
   // --------------------------------------------------------------------------
-  // 4. LOGOUT PENGGUNA
+  // 4. LIST USERS (KHUSUS DEVELOPER / ADMIN)
+  // --------------------------------------------------------------------------
+  if (req.method === "GET" && (action === "list_users" || action === "users")) {
+    try {
+      const authHeader = req.headers.authorization || "";
+      const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+
+      if (!token) {
+        return res.status(401).json({ error: "Sesi tidak ditemukan. Harap login terlebih dahulu." });
+      }
+
+      const userId = await kvCommand(["GET", `session:${token}`]);
+      if (!userId) {
+        return res.status(401).json({ error: "Sesi telah kedaluwarsa." });
+      }
+
+      const rawUser = await kvCommand(["GET", `user:${userId}`]);
+      if (!rawUser) {
+        return res.status(404).json({ error: "Pengguna tidak ditemukan." });
+      }
+
+      const userRecord = typeof rawUser === "string" ? JSON.parse(rawUser) : rawUser;
+      const clientIp = getClientIp(req);
+
+      if (!isDevOrAdmin(clientIp, userRecord.email)) {
+        return res.status(403).json({
+          error: "Akses Ditolak: Fitur ini hanya dapat diakses oleh Developer / Admin aplikasi!",
+        });
+      }
+
+      // Ambil seluruh user dari KEYS dan SMEMBERS
+      let allUserKeys = [];
+      try {
+        const keys = await kvCommand(["KEYS", "user:usr_*"]);
+        if (Array.isArray(keys)) {
+          allUserKeys = keys;
+        }
+      } catch (err) {
+        console.warn("KEYS user:usr_* error:", err);
+      }
+
+      try {
+        const setUsers = await kvCommand(["SMEMBERS", "all_users"]);
+        if (Array.isArray(setUsers)) {
+          for (const uid of setUsers) {
+            const k = `user:${uid}`;
+            if (!allUserKeys.includes(k)) {
+              allUserKeys.push(k);
+            }
+          }
+        }
+      } catch {
+        // ignore set lookup error
+      }
+
+      const userList = [];
+      for (const key of allUserKeys) {
+        try {
+          const rawU = await kvCommand(["GET", key]);
+          if (!rawU) continue;
+          const u = typeof rawU === "string" ? JSON.parse(rawU) : rawU;
+          if (!u || !u.id || !u.email) continue;
+
+          // Ambil ringkasan data game & email milik user ini
+          let gamesCount = 0;
+          let emailsCount = 0;
+          let registrationsCount = 0;
+          try {
+            const rawData = await kvCommand(["GET", `data:${u.id}`]);
+            if (rawData) {
+              const d = typeof rawData === "string" ? JSON.parse(rawData) : rawData;
+              gamesCount = Array.isArray(d.games) ? d.games.length : 0;
+              emailsCount = Array.isArray(d.emails) ? d.emails.length : 0;
+              registrationsCount = Array.isArray(d.registrations) ? d.registrations.length : 0;
+            }
+          } catch {
+            // ignore
+          }
+
+          userList.push({
+            id: u.id,
+            email: u.email,
+            registeredIp: u.registeredIp || "-",
+            verified: !!u.verified,
+            verifiedAt: u.verifiedAt || null,
+            createdAt: u.createdAt || null,
+            gamesCount,
+            emailsCount,
+            registrationsCount,
+          });
+        } catch (err) {
+          console.warn("Gagal parse user:", key, err);
+        }
+      }
+
+      // Urutkan dari yang terbaru mendaftar
+      userList.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+      return res.status(200).json({
+        success: true,
+        total: userList.length,
+        users: userList,
+      });
+    } catch (err) {
+      return res.status(500).json({ error: err.message || "Gagal mengambil daftar pengguna" });
+    }
+  }
+
+  // --------------------------------------------------------------------------
+  // 5. LOGOUT PENGGUNA
   // --------------------------------------------------------------------------
   if (req.method === "POST" && action === "logout") {
     try {

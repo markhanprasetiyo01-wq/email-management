@@ -25,6 +25,26 @@ export const authService = {
     return !!this.getToken();
   },
 
+  isAdmin() {
+    const user = this.getUser();
+    return !!user?.isAdmin;
+  },
+
+  async getRegisteredUsers() {
+    const token = this.getToken();
+    if (!token) throw new Error("Anda belum login!");
+
+    const res = await fetch("/api/auth?action=list_users", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(data.error || "Gagal mengambil daftar pengguna!");
+    }
+    return data;
+  },
+
   setSession(token, user) {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));

@@ -30,6 +30,7 @@ import {
   openBackupModal,
   openBulkEmailModal,
   openEditEmailDetailsModal,
+  openAdminUsersModal,
 } from "./ui/modals.js";
 import { showToast } from "./ui/toast.js";
 import { fetchTokenByContractAddress } from "./services/cryptoService.js";
@@ -96,6 +97,7 @@ const SVG_ICONS = {
   backup: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>`,
   bulk: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>`,
   user: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  users: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
   logout: `<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>`,
   key: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L16 7l-1.5-1.5-1.5 1.5 1.5 1.5-1.5 1.5-1.5-1.5-3.5 3.5a6.5 6.5 0 1 0 3 3l3.5-3.5Z"/></svg>`,
   copy: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`,
@@ -280,6 +282,16 @@ function renderApp() {
                 ? `
               <div class="user-pill">
                 <span class="user-pill-email" title="${authService.getUser()?.email || "User"}">${SVG_ICONS.user} <span>${authService.getUser()?.email || "User"}</span></span>
+                ${
+                  authService.isAdmin()
+                    ? `
+                  <button type="button" id="btn-admin-users" class="user-pill-admin-btn" title="Panel Developer: Lihat Semua Akun Terdaftar">
+                    ${SVG_ICONS.users}
+                    <span>List Akun</span>
+                  </button>
+                `
+                    : ""
+                }
                 <button type="button" id="btn-logout" class="user-pill-logout" title="Keluar / Logout">${SVG_ICONS.logout} <span>Keluar</span></button>
               </div>
             `
@@ -293,6 +305,16 @@ function renderApp() {
           </div>
 
           <div class="header-buttons">
+            ${
+              authService.isAdmin()
+                ? `
+              <button class="btn btn-secondary btn-sm btn-admin-header" id="btn-admin-header" title="Developer: Lihat Semua Akun Terdaftar">
+                ${SVG_ICONS.users}
+                <span>List Akun</span>
+              </button>
+            `
+                : ""
+            }
             <button class="btn btn-secondary btn-sm" id="btn-backup-data" title="Cadangan Data">
               ${SVG_ICONS.backup}
               <span>Backup</span>
@@ -786,6 +808,10 @@ function renderApp() {
       "btn-danger"
     );
   });
+
+  const handleOpenAdminUsers = () => openAdminUsersModal();
+  document.getElementById("btn-admin-users")?.addEventListener("click", handleOpenAdminUsers);
+  document.getElementById("btn-admin-header")?.addEventListener("click", handleOpenAdminUsers);
 
   // 0B. Toggle Hamburger Menu Navigasi Mobile
   const btnMobileMenu = document.getElementById("btn-mobile-menu");
@@ -1321,6 +1347,15 @@ async function autoRefreshCryptoPrices() {
 store.readyPromise.then(async () => {
   renderApp();
   autoRefreshCryptoPrices();
+
+  // Sinkronkan data sesi dan status admin terbaru dari server
+  if (authService.isLoggedIn()) {
+    authService.checkAuth().then((u) => {
+      if (u?.isAdmin) {
+        renderApp();
+      }
+    });
+  }
 
   // Periksa apakah URL memuat token verifikasi email (dari link yang diklik user di email)
   const urlParams = new URLSearchParams(window.location.search);

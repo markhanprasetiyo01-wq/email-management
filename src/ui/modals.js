@@ -29,6 +29,8 @@ const MODAL_ICONS = {
   key: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 2-2 2m-1.5 1.5L16 7l-1.5-1.5-1.5 1.5 1.5 1.5-1.5 1.5-1.5-1.5-3.5 3.5a6.5 6.5 0 1 0 3 3l3.5-3.5Z"/></svg>`,
   save: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
   user: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  users: `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  copy: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`,
   alert: `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
 };
 
@@ -97,7 +99,10 @@ export function closeModal() {
   if (modalOverlay) {
     modalOverlay.classList.remove("active");
     const box = modalOverlay.querySelector(".modal-box");
-    if (box) box.classList.remove("modal-box-confirm");
+    if (box) {
+      box.classList.remove("modal-box-confirm");
+      box.classList.remove("modal-box-admin");
+    }
   }
 }
 
@@ -1422,6 +1427,208 @@ export function openEditEmailDetailsModal(emailId) {
   };
 
   overlay.classList.add("active");
+}
+
+/**
+ * openAdminUsersModal()
+ * ---------------------
+ * Membuka dialog panel Developer / Admin untuk menampilkan seluruh daftar akun
+ * pengguna yang telah mendaftar di aplikasi beserta statistik data mereka.
+ */
+export async function openAdminUsersModal() {
+  if (!authService.isLoggedIn()) {
+    showToast("Anda harus login terlebih dahulu!", "error");
+    openAuthModal("login");
+    return;
+  }
+
+  const { overlay, title, body, footer } = getModalElements();
+  const box = overlay.querySelector(".modal-box");
+  if (box) box.classList.add("modal-box-admin");
+
+  title.innerHTML = `
+    <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+      <span style="display:inline-flex; align-items:center; color:#6366f1;">${MODAL_ICONS.users}</span>
+      <span>Daftar Akun Terdaftar</span>
+      <span class="admin-badge-pill">Dev / Admin</span>
+    </div>
+  `;
+
+  body.innerHTML = `
+    <div class="admin-modal-loading" style="text-align:center; padding:3rem 1rem;">
+      <div class="admin-spinner"></div>
+      <p style="margin-top:0.85rem; color:var(--text-muted); font-size:0.88rem;">Memuat daftar akun pengguna dari cloud database...</p>
+    </div>
+  `;
+
+  footer.innerHTML = `
+    <button class="btn btn-secondary btn-sm" id="btn-close-admin-users-modal">Tutup</button>
+  `;
+  document.getElementById("btn-close-admin-users-modal").onclick = closeModal;
+
+  overlay.classList.add("active");
+
+  async function fetchAndRender() {
+    try {
+      body.innerHTML = `
+        <div class="admin-modal-loading" style="text-align:center; padding:3rem 1rem;">
+          <div class="admin-spinner"></div>
+          <p style="margin-top:0.85rem; color:var(--text-muted); font-size:0.88rem;">Memuat daftar akun pengguna dari cloud database...</p>
+        </div>
+      `;
+
+      const res = await authService.getRegisteredUsers();
+      const users = res.users || [];
+      renderUserTable(users);
+    } catch (err) {
+      body.innerHTML = `
+        <div style="text-align:center; padding:2.5rem 1rem;">
+          <div style="font-size:2.2rem; margin-bottom:0.6rem;">⚠️</div>
+          <h4 style="color:#f87171; margin-bottom:0.4rem; font-size:1.05rem;">Akses Gagal</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem; max-width:400px; margin:0 auto 1.25rem;">
+            ${err.message || "Gagal memuat data pengguna. Pastikan Anda login dengan akun Admin atau IP Anda terdaftar di whitelist."}
+          </p>
+          <button class="btn btn-secondary btn-sm" id="btn-retry-admin-users">Coba Lagi</button>
+        </div>
+      `;
+      const retryBtn = document.getElementById("btn-retry-admin-users");
+      if (retryBtn) retryBtn.onclick = fetchAndRender;
+    }
+  }
+
+  function renderUserTable(users) {
+    const totalUsers = users.length;
+    const totalGames = users.reduce((sum, u) => sum + (u.gamesCount || 0), 0);
+    const totalEmails = users.reduce((sum, u) => sum + (u.emailsCount || 0), 0);
+
+    body.innerHTML = `
+      <div class="admin-panel-wrapper">
+        <!-- Kartu Metrik Ringkasan -->
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">Total Akun Pengguna</span>
+            <span class="admin-stat-value">${totalUsers}</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">Total Game Dikelola</span>
+            <span class="admin-stat-value" style="color:#38bdf8;">${totalGames}</span>
+          </div>
+          <div class="admin-stat-card">
+            <span class="admin-stat-label">Total Email Terhubung</span>
+            <span class="admin-stat-value" style="color:#4ade80;">${totalEmails}</span>
+          </div>
+        </div>
+
+        <!-- Kolom Pencarian Cepat -->
+        <div class="admin-search-wrapper" style="margin-bottom:0.85rem;">
+          <div class="search-input-box" style="position:relative;">
+            <span class="search-icon-prefix" style="position:absolute; left:0.85rem; top:50%; transform:translateY(-50%); color:var(--text-muted); display:flex;">${MODAL_ICONS.search}</span>
+            <input 
+              type="text" 
+              class="form-input" 
+              id="admin-search-input" 
+              placeholder="Cari berdasarkan email, IP, atau ID user..."
+              style="padding-left: 2.35rem; width:100%; height:38px;"
+            >
+          </div>
+        </div>
+
+        <!-- List Pengguna Terdaftar -->
+        <div class="admin-users-list" id="admin-users-list"></div>
+      </div>
+    `;
+
+    footer.innerHTML = `
+      <button class="btn btn-secondary btn-sm" id="btn-refresh-admin-users" title="Muat ulang data terbaru">
+        ${MODAL_ICONS.refresh}
+        <span>Refresh</span>
+      </button>
+      <button class="btn btn-primary btn-sm" id="btn-close-admin-users-modal-2">Tutup</button>
+    `;
+
+    document.getElementById("btn-close-admin-users-modal-2").onclick = closeModal;
+    document.getElementById("btn-refresh-admin-users").onclick = fetchAndRender;
+
+    const listContainer = document.getElementById("admin-users-list");
+    const searchInput = document.getElementById("admin-search-input");
+
+    function renderList(query = "") {
+      const q = query.toLowerCase().trim();
+      const filtered = users.filter((u) => {
+        if (!q) return true;
+        return (
+          u.email.toLowerCase().includes(q) ||
+          (u.registeredIp && u.registeredIp.toLowerCase().includes(q)) ||
+          u.id.toLowerCase().includes(q)
+        );
+      });
+
+      if (filtered.length === 0) {
+        listContainer.innerHTML = `
+          <div style="text-align:center; padding:2rem 1rem; color:var(--text-muted); font-size:0.86rem;">
+            Tidak ada akun yang cocok dengan kata kunci "<strong>${query}</strong>".
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = filtered.map((u) => {
+        const initial = (u.email || "U")[0].toUpperCase();
+        const dateFormatted = u.createdAt ? new Date(u.createdAt).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }) : "-";
+
+        return `
+          <div class="admin-user-card">
+            <div class="admin-user-avatar">${initial}</div>
+            <div class="admin-user-info">
+              <div class="admin-user-email-row">
+                <span class="admin-user-email" title="${u.email}">${u.email}</span>
+                <button type="button" class="btn-copy-user-email" data-email="${u.email}" title="Salin Email">
+                  ${MODAL_ICONS.copy}
+                </button>
+              </div>
+              <div class="admin-user-meta">
+                <span>📅 ${dateFormatted}</span>
+                <span>🌐 <code>${u.registeredIp}</code></span>
+                <span class="admin-user-id-code">ID: ${u.id}</span>
+              </div>
+            </div>
+            <div class="admin-user-badges">
+              <span class="admin-data-tag" title="Jumlah Game & Email">
+                🎮 ${u.gamesCount} • ✉️ ${u.emailsCount}
+              </span>
+              <span class="admin-verified-tag">✓ Aktif</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // Listener salin email
+      listContainer.querySelectorAll(".btn-copy-user-email").forEach((btn) => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const email = btn.getAttribute("data-email");
+          if (email) {
+            navigator.clipboard.writeText(email);
+            showToast(`Email ${email} disalin!`);
+          }
+        };
+      });
+    }
+
+    searchInput.oninput = (e) => {
+      renderList(e.target.value);
+    };
+
+    renderList();
+  }
+
+  fetchAndRender();
 }
 
 // ============================================================================
