@@ -752,6 +752,123 @@ class Store {
     this.notify();
   }
 
+  /**
+   * reorderGameRegistrations(gameId, orderedRegIds)
+   * Menyusun ulang urutan pendaftaran email pada game tertentu.
+   * Urutan baru disimpan secara presisi di memori, cache sesi, dan disinkronkan ke Cloud Database.
+   * 
+   * @param {string} gameId - ID game yang daftar emailnya ingin disusun ulang
+   * @param {string[]} orderedRegIds - Array ID registration sesuai urutan baru
+   */
+  reorderGameRegistrations(gameId, orderedRegIds) {
+    if (!gameId || !Array.isArray(orderedRegIds) || orderedRegIds.length === 0) return;
+
+    // 1. Ambil seluruh indeks dari registrasi milik gameId ini di this.registrations
+    const indices = [];
+    const currentRegsMap = new Map();
+    this.registrations.forEach((r, idx) => {
+      if (r.gameId === gameId) {
+        indices.push(idx);
+        currentRegsMap.set(r.id, r);
+      }
+    });
+
+    if (indices.length === 0) return;
+
+    // 2. Susun kembali registrasi game sesuai urutan yang ditentukan oleh orderedRegIds
+    const reorderedList = [];
+    orderedRegIds.forEach((id, newIndex) => {
+      const reg = currentRegsMap.get(id);
+      if (reg) {
+        reg.order = newIndex;
+        reorderedList.push(reg);
+        currentRegsMap.delete(id);
+      }
+    });
+
+    // Masukkan sisa registrasi game ini yang mungkin tidak ada di orderedRegIds
+    for (const [_, reg] of currentRegsMap.entries()) {
+      reg.order = reorderedList.length;
+      reorderedList.push(reg);
+    }
+
+    // 3. Tuliskan kembali ke slot indeks aslinya di array this.registrations
+    indices.forEach((originalIdx, i) => {
+      this.registrations[originalIdx] = reorderedList[i];
+    });
+
+    // 4. Perbarui cache sesi dan sinkronkan ke database cloud
+    this._writeUserSessionCache();
+    this.syncToFile();
+    this.notify();
+  }
+
+  /**
+   * moveRegistrationRelative(sourceId, targetId, position)
+   * Memindahkan registrasi sourceId sebelum ('before') atau sesudah ('after') targetId.
+   * 
+   * @param {string} sourceId - ID registration yang dipindahkan
+   * @param {string} targetId - ID registration tujuan
+   * @param {'before'|'after'} position - Posisi relatif terhadap targetId
+   */
+  moveRegistrationRelative(sourceId, targetId, position = "before") {
+    if (!sourceId || !targetId || sourceId === targetId) return false;
+
+    const sourceReg = this.registrations.find((r) => r.id === sourceId);
+    const targetReg = this.registrations.find((r) => r.id === targetId);
+
+    if (!sourceReg || !targetReg || sourceReg.gameId !== targetReg.gameId) {
+      return false;
+    }
+
+    const gameId = sourceReg.gameId;
+    const gameRegs = this.registrations.filter((r) => r.gameId === gameId);
+
+    const regIds = gameRegs.map((r) => r.id);
+    const sourceIdx = regIds.indexOf(sourceId);
+    if (sourceIdx === -1) return false;
+
+    regIds.splice(sourceIdx, 1);
+
+    const targetIdx = regIds.indexOf(targetId);
+    if (targetIdx === -1) return false;
+
+    const insertIdx = position === "before" ? targetIdx : targetIdx + 1;
+    regIds.splice(insertIdx, 0, sourceId);
+
+    this.reorderGameRegistrations(gameId, regIds);
+    return true;
+  }
+
+  /**
+   * moveRegistration(regId, direction)
+   * Menggeser 1 registrasi ke atas ('up') atau ke bawah ('down') satu posisi.
+   * 
+   * @param {string} regId - ID registration yang ingin dipindahkan
+   * @param {'up'|'down'} direction - Arah pergeseran
+   */
+  moveRegistration(regId, direction) {
+    if (!regId || (direction !== "up" && direction !== "down")) return false;
+
+    const currentReg = this.registrations.find((r) => r.id === regId);
+    if (!currentReg) return false;
+
+    const gameId = currentReg.gameId;
+    const gameRegs = this.registrations.filter((r) => r.gameId === gameId);
+    const idx = gameRegs.findIndex((r) => r.id === regId);
+    if (idx === -1) return false;
+
+    const targetIdx = direction === "up" ? idx - 1 : idx + 1;
+    if (targetIdx < 0 || targetIdx >= gameRegs.length) return false;
+
+    const targetReg = gameRegs[targetIdx];
+    return this.moveRegistrationRelative(
+      regId,
+      targetReg.id,
+      direction === "up" ? "before" : "after",
+    );
+  }
+
   // ==========================================================================
   // DATA RELASIONAL GABUNGAN (ENRICHED DATA - MIRIP SQL JOIN)
   // ==========================================================================

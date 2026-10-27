@@ -112,6 +112,9 @@ const SVG_ICONS = {
   emptyBox: `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>`,
   checkSquare: `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`,
   searchEmpty: `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`,
+  grip: `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><circle cx="9" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg>`,
+  arrowUp: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>`,
+  arrowDown: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
 };
 
 /**
@@ -582,17 +585,35 @@ function renderApp() {
                   ? `
                 <!-- Ringkasan Singkat Saat Card Diciutkan (Collapsed) -->
                 <div class="collapsed-email-summary" data-action="toggle-collapse-game" data-game-id="${game.id}" title="Klik untuk membuka rincian email game ini">
-                  <span class="collapsed-summary-header">${SVG_ICONS.mail} <span>${gameRegs.length} Email Terhubung:</span></span>
-                  <span class="status-summary-tag live"><span class="status-dot live"></span> ${gameRegs.filter((r) => r.status === "live").length} Live</span>
-                  <span class="status-summary-tag praregist"><span class="status-dot praregist"></span> ${gameRegs.filter((r) => r.status === "praregist").length} Praregist</span>
-                  ${gameRegs.some((r) => r.status === "maintenance") ? `<span class="status-summary-tag maintenance"><span class="status-dot maintenance"></span> ${gameRegs.filter((r) => r.status === "maintenance").length} Maint</span>` : ""}
-                  ${totalLiveCurrency > 0 ? `<span class="status-summary-tag tag-currency">${game.currencyIcon || "🪙"} ${totalLiveCurrency.toLocaleString("id-ID")}${estimatedTotalIdr > 0 ? ` <strong class="currency-idr-sub">(≈ Rp ${Math.round(estimatedTotalIdr).toLocaleString("id-ID")})</strong>` : ""}</span>` : ""}
-                  <span class="collapsed-expand-hint">Rincian ${SVG_ICONS.chevronDown}</span>
+                  <div class="collapsed-summary-header">
+                    <span class="collapsed-summary-title">
+                      ${SVG_ICONS.mail}
+                      <span>${gameRegs.length} Email Terhubung${gameRegs.length > 0 ? ":" : ""}</span>
+                    </span>
+                  </div>
+
+                  <div class="collapsed-summary-tags">
+                    ${
+                      gameRegs.length === 0
+                        ? `<span class="status-summary-tag tag-empty">Belum ada email yang terhubung</span>`
+                        : `
+                      <span class="status-summary-tag live"><span class="status-dot live"></span> ${gameRegs.filter((r) => r.status === "live").length} Live</span>
+                      <span class="status-summary-tag praregist"><span class="status-dot praregist"></span> ${gameRegs.filter((r) => r.status === "praregist").length} Praregist</span>
+                      ${gameRegs.some((r) => r.status === "maintenance") ? `<span class="status-summary-tag maintenance"><span class="status-dot maintenance"></span> ${gameRegs.filter((r) => r.status === "maintenance").length} Maint</span>` : ""}
+                      ${totalLiveCurrency > 0 ? `<span class="status-summary-tag tag-currency">${game.currencyIcon || "🪙"} ${totalLiveCurrency.toLocaleString("id-ID")}${estimatedTotalIdr > 0 ? ` <strong class="currency-idr-sub">(≈ Rp ${Math.round(estimatedTotalIdr).toLocaleString("id-ID")})</strong>` : ""}</span>` : ""}
+                    `
+                    }
+                  </div>
+
+                  <div class="collapsed-expand-hint">
+                    <span>Buka Rincian Email</span>
+                    ${SVG_ICONS.chevronDown}
+                  </div>
                 </div>
               `
                   : `
                 <!-- Daftar Baris Email yang Terhubung dengan Game Ini -->
-                <div class="emails-in-game-list">
+                <div class="emails-in-game-list" data-game-id="${game.id}">
                   ${
                     gameRegs.length === 0
                       ? `
@@ -601,7 +622,9 @@ function renderApp() {
                     </div>
                   `
                       : gameRegs
-                          .map((reg) => {
+                          .map((reg, index) => {
+                            const isFirst = index === 0;
+                            const isLast = index === gameRegs.length - 1;
                             // Hitung berapa game lain yang juga menggunakan email ini
                             const totalGamesForThisEmail =
                               allRegistrations.filter(
@@ -612,18 +635,36 @@ function renderApp() {
                               .join(", ");
 
                             return `
-                      <div class="email-item-row" data-reg-id="${reg.id}">
-                        <div class="email-info-cell">
-                          <div class="email-address-text">
-                            <span class="email-icon-prefix">${SVG_ICONS.mail}</span>
-                            <span class="email-addr-text">${reg.email.address}</span>
-                            <span class="multi-game-badge" title="Email ini juga terdaftar di game: ${otherGameNames}">
-                              ${SVG_ICONS.link} <span>${totalGamesForThisEmail.length} Game</span>
-                            </span>
+                      <div class="email-item-row" data-reg-id="${reg.id}" data-game-id="${game.id}">
+                        <div class="email-row-main">
+                          <!-- Tombol Atur Urutan: Drag Handle & Arrow Up/Down & Badge Urutan -->
+                          <div class="email-order-cell">
+                            <button type="button" class="btn-drag-handle" data-action="drag-handle" title="Tahan dan geser (Drag & Drop) untuk mengatur urutan email" aria-label="Geser urutan">
+                              ${SVG_ICONS.grip}
+                            </button>
+                            <div class="email-order-arrows">
+                              <button type="button" class="btn-order-arrow btn-order-up" data-action="move-email-up" data-reg-id="${reg.id}" data-game-id="${game.id}" data-index="${index}" ${isFirst ? "disabled" : ""} title="${isFirst ? "Sudah di urutan teratas" : "Pindahkan email ke atas"}">
+                                ${SVG_ICONS.arrowUp}
+                              </button>
+                              <button type="button" class="btn-order-arrow btn-order-down" data-action="move-email-down" data-reg-id="${reg.id}" data-game-id="${game.id}" data-index="${index}" ${isLast ? "disabled" : ""} title="${isLast ? "Sudah di urutan terbawah" : "Pindahkan email ke bawah"}">
+                                ${SVG_ICONS.arrowDown}
+                              </button>
+                            </div>
+                            <span class="email-order-badge" title="Urutan akun ke-${index + 1}">#${index + 1}</span>
                           </div>
-                          <div class="email-sub-detail">
-                            ${reg.ign && reg.ign !== "-" ? `<span>IGN: <strong style="color:#fff;">${reg.ign}</strong></span>` : ""}
-                            ${reg.notes ? `<span class="email-notes-text">(${reg.notes})</span>` : ""}
+
+                          <div class="email-info-cell">
+                            <div class="email-address-text">
+                              <span class="email-icon-prefix">${SVG_ICONS.mail}</span>
+                              <span class="email-addr-text">${reg.email.address}</span>
+                              <span class="multi-game-badge" title="Email ini juga terdaftar di game: ${otherGameNames}">
+                                ${SVG_ICONS.link} <span>${totalGamesForThisEmail.length} Game</span>
+                              </span>
+                            </div>
+                            <div class="email-sub-detail">
+                              ${reg.ign && reg.ign !== "-" ? `<span>IGN: <strong style="color:#fff;">${reg.ign}</strong></span>` : ""}
+                              ${reg.notes ? `<span class="email-notes-text">(${reg.notes})</span>` : ""}
+                            </div>
                           </div>
                         </div>
 
@@ -991,6 +1032,231 @@ function renderApp() {
         showToast(res.error || "Gagal memperbarui harga token", "error");
       }
     };
+  });
+
+  // 15. Atur Urutan Email Manual via Tombol Arrow (Atas / Bawah)
+  document.querySelectorAll('[data-action="move-email-up"]').forEach((btn) => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const regId = btn.dataset.regId;
+      const gameId = btn.dataset.gameId;
+      const index = parseInt(btn.dataset.index, 10);
+
+      // Ambil daftar email game yang saat ini tampil di layar
+      let targetList = allRegistrations.filter((r) => r.gameId === gameId);
+      if (currentStatusFilter !== "all") {
+        targetList = targetList.filter((r) => r.status === currentStatusFilter);
+      }
+      if (q) {
+        const gameObj = games.find((g) => g.id === gameId);
+        const matchGame = gameObj && (gameObj.title.toLowerCase().includes(q) || (gameObj.publisher || "").toLowerCase().includes(q));
+        if (!matchGame) {
+          targetList = targetList.filter(
+            (r) => r.email.address.toLowerCase().includes(q) || r.ign.toLowerCase().includes(q) || (r.notes || "").toLowerCase().includes(q),
+          );
+        }
+      }
+
+      if (index > 0 && index < targetList.length) {
+        const targetReg = targetList[index - 1];
+        const success = store.moveRegistrationRelative(regId, targetReg.id, "before");
+        if (success) {
+          showToast("Urutan email dipindahkan ke atas");
+        }
+      }
+    };
+  });
+
+  document.querySelectorAll('[data-action="move-email-down"]').forEach((btn) => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const regId = btn.dataset.regId;
+      const gameId = btn.dataset.gameId;
+      const index = parseInt(btn.dataset.index, 10);
+
+      let targetList = allRegistrations.filter((r) => r.gameId === gameId);
+      if (currentStatusFilter !== "all") {
+        targetList = targetList.filter((r) => r.status === currentStatusFilter);
+      }
+      if (q) {
+        const gameObj = games.find((g) => g.id === gameId);
+        const matchGame = gameObj && (gameObj.title.toLowerCase().includes(q) || (gameObj.publisher || "").toLowerCase().includes(q));
+        if (!matchGame) {
+          targetList = targetList.filter(
+            (r) => r.email.address.toLowerCase().includes(q) || r.ign.toLowerCase().includes(q) || (r.notes || "").toLowerCase().includes(q),
+          );
+        }
+      }
+
+      if (index >= 0 && index < targetList.length - 1) {
+        const targetReg = targetList[index + 1];
+        const success = store.moveRegistrationRelative(regId, targetReg.id, "after");
+        if (success) {
+          showToast("Urutan email dipindahkan ke bawah");
+        }
+      }
+    };
+  });
+
+  // 16. Drag & Drop Manual untuk Mengatur Urutan Email di Dalam Game
+  let draggedRegId = null;
+  let draggedGameId = null;
+  let currentDropTarget = null;
+  let dropPosition = "before"; // 'before' | 'after'
+
+  document.querySelectorAll(".emails-in-game-list").forEach((listEl) => {
+    const rows = listEl.querySelectorAll(".email-item-row");
+
+    rows.forEach((row) => {
+      const handle = row.querySelector(".btn-drag-handle");
+
+      // Handle hover untuk mengaktifkan draggable tanpa mengganggu klik teks atau tombol
+      if (handle) {
+        handle.addEventListener("mouseenter", () => {
+          row.setAttribute("draggable", "true");
+        });
+        handle.addEventListener("mouseleave", () => {
+          if (!draggedRegId) {
+            row.setAttribute("draggable", "false");
+          }
+        });
+
+        // Touch Drag & Drop untuk perangkat mobile & tablet
+        let isTouching = false;
+        handle.addEventListener("touchstart", (e) => {
+          if (e.touches.length !== 1) return;
+          isTouching = true;
+          draggedRegId = row.dataset.regId;
+          draggedGameId = row.dataset.gameId;
+          row.classList.add("dragging");
+        }, { passive: true });
+
+        handle.addEventListener("touchmove", (e) => {
+          if (!isTouching || e.touches.length !== 1) return;
+          const touch = e.touches[0];
+          const elem = document.elementFromPoint(touch.clientX, touch.clientY);
+          const targetRow = elem ? elem.closest(".email-item-row") : null;
+
+          if (currentDropTarget && currentDropTarget !== targetRow) {
+            currentDropTarget.classList.remove("drop-target-above", "drop-target-below");
+          }
+
+          if (targetRow && targetRow !== row && targetRow.dataset.gameId === draggedGameId) {
+            currentDropTarget = targetRow;
+            const rect = targetRow.getBoundingClientRect();
+            const isAbove = (touch.clientY - rect.top) < (rect.height / 2);
+            dropPosition = isAbove ? "before" : "after";
+            if (isAbove) {
+              targetRow.classList.add("drop-target-above");
+              targetRow.classList.remove("drop-target-below");
+            } else {
+              targetRow.classList.add("drop-target-below");
+              targetRow.classList.remove("drop-target-above");
+            }
+          }
+        }, { passive: true });
+
+        const onTouchEnd = () => {
+          if (!isTouching) return;
+          isTouching = false;
+          row.classList.remove("dragging");
+          if (currentDropTarget && draggedRegId) {
+            const targetRegId = currentDropTarget.dataset.regId;
+            currentDropTarget.classList.remove("drop-target-above", "drop-target-below");
+            if (targetRegId && targetRegId !== draggedRegId) {
+              const success = store.moveRegistrationRelative(draggedRegId, targetRegId, dropPosition);
+              if (success) {
+                showToast("Urutan email berhasil diubah");
+              }
+            }
+          }
+          draggedRegId = null;
+          draggedGameId = null;
+          currentDropTarget = null;
+        };
+
+        handle.addEventListener("touchend", onTouchEnd);
+        handle.addEventListener("touchcancel", onTouchEnd);
+      }
+
+      // Dragstart event (HTML5 Desktop Drag)
+      row.addEventListener("dragstart", (e) => {
+        draggedRegId = row.dataset.regId;
+        draggedGameId = row.dataset.gameId;
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", draggedRegId);
+        row.classList.add("dragging");
+      });
+
+      // Dragend event
+      row.addEventListener("dragend", () => {
+        row.classList.remove("dragging");
+        row.setAttribute("draggable", "false");
+        draggedRegId = null;
+        draggedGameId = null;
+        if (currentDropTarget) {
+          currentDropTarget.classList.remove("drop-target-above", "drop-target-below");
+          currentDropTarget = null;
+        }
+      });
+
+      // Dragover event
+      row.addEventListener("dragover", (e) => {
+        if (!draggedRegId || row.dataset.regId === draggedRegId || row.dataset.gameId !== draggedGameId) {
+          return;
+        }
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+
+        const rect = row.getBoundingClientRect();
+        const relY = e.clientY - rect.top;
+        const isAbove = relY < rect.height / 2;
+
+        if (currentDropTarget && currentDropTarget !== row) {
+          currentDropTarget.classList.remove("drop-target-above", "drop-target-below");
+        }
+
+        currentDropTarget = row;
+        dropPosition = isAbove ? "before" : "after";
+
+        if (isAbove) {
+          row.classList.add("drop-target-above");
+          row.classList.remove("drop-target-below");
+        } else {
+          row.classList.add("drop-target-below");
+          row.classList.remove("drop-target-above");
+        }
+      });
+
+      // Dragleave event
+      row.addEventListener("dragleave", (e) => {
+        if (!row.contains(e.relatedTarget)) {
+          row.classList.remove("drop-target-above", "drop-target-below");
+          if (currentDropTarget === row) {
+            currentDropTarget = null;
+          }
+        }
+      });
+
+      // Drop event
+      row.addEventListener("drop", (e) => {
+        e.preventDefault();
+        row.classList.remove("drop-target-above", "drop-target-below");
+        const targetRegId = row.dataset.regId;
+        const targetGameId = row.dataset.gameId;
+
+        if (draggedRegId && targetRegId && draggedRegId !== targetRegId && draggedGameId === targetGameId) {
+          const success = store.moveRegistrationRelative(draggedRegId, targetRegId, dropPosition);
+          if (success) {
+            showToast("Urutan email berhasil diubah");
+          }
+        }
+
+        draggedRegId = null;
+        draggedGameId = null;
+        currentDropTarget = null;
+      });
+    });
   });
 }
 
