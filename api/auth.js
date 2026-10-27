@@ -69,12 +69,10 @@ function getClientIp(req) {
 function isWhitelistedIp(ip) {
   if (!ip) return false;
   const cleanIp = ip.trim();
-  // 1. IP PC Pengembang / Pemilik
-  if (cleanIp === "156.230.184.103") return true;
-  // 2. Localhost / Mesin Lokal
+  // 1. Localhost / Mesin Lokal
   if (cleanIp === "127.0.0.1" || cleanIp === "::1" || cleanIp === "localhost")
     return true;
-  // 3. IP tambahan dari Environment Variable ADMIN_WHITELIST_IPS jika ada
+  // 2. IP tambahan dari Environment Variable ADMIN_WHITELIST_IPS (pisahkan dengan koma jika lebih dari satu)
   const envList = (process.env.ADMIN_WHITELIST_IPS || "")
     .split(",")
     .map((s) => s.trim())

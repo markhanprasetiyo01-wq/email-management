@@ -66,6 +66,9 @@ APP_URL="https://gamemail.yourdomain.com"
 # Cadangan SMTP (Opsional)
 GMAIL_USER="your-email@gmail.com"
 GMAIL_APP_PASS="your-app-password"
+
+# Whitelist IP Pengembang (Bypass 1 IP 1 Akun, pisahkan koma jika lebih dari satu)
+ADMIN_WHITELIST_IPS="123.456.78.90"
 ```
 
 ---
